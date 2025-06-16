@@ -1,0 +1,104 @@
+PROYEK REST API SERVICE UNTUK ANDROID KOTLIN APPLICATION
+
+DESKRIPSI:
+Aplikasi Android yang hendak dibuat adalah Kurusin. Aplikasi tersebut merupakan aplikasi kesehatan yang terdiri dari 5 navigasi utama: Home (rekomendasi makanan menggunakan AI), Profile (data lengkap user), History (history makanan dan workout yang telah dilakukan), Workout (membuat custom workout berdasarkan exercise dan menjalani workout), Food (scan makanan dan melihta kandungan nutrisi). Aplikasi tersebut menggunakan data source local dan remote. Untuk data source remote, akan dibuatkan REST API Service berbasis Node.js menggunakan MongoDB. Berikut adalah detail backendnya:
+
+STRUKTUR DIREKTORI:
+kurusin-backend/
+├── index.js
+└── src/
+   ├── config/
+   │   └── config.js
+   └── controllers/
+   │   ├── exerciseController.js
+   │   ├── foodController.js
+   │   ├── otherController.js
+   │   ├── userController.js
+   │   └── workoutController.js
+   ├── database/
+   │   └── connection.js
+   ├── middlewares/
+   ├── migrations/
+   │   ├── allMigration.js
+   │   ├── exerciseMigration.js
+   │   ├── foodMigration.js
+   │   ├── userMigration.js
+   │   └── workoutMigration.js
+   └── models/
+   │   ├── index.js
+   │   └── User.js
+   ├── routes/
+   │   ├── index.js
+   │   └── userRoutes.js
+   └── seeders/
+       ├── allSeeder.js
+       └── userSeeder.js
+
+3RD PARTY API:
+- RapidAPI ExerciseDB
+- Gemini API (AI Studio)
+- Cloudflare R2 Storage
+
+ENDPOINT:
+1. GET/api/exercises?equipment=none&muscles=none
+2. GET/api/exercise/:id_exercise
+3. POST/api/workout
+4. GET/api/workout/:id_exercise
+5. GET/api/foods
+6. GET/api/foods/{id}
+7. GET/api/diary
+8. POST/api/scan
+9. POST/api/foods/recommendation
+10. POST/api/users
+11. GET/api/users
+
+KODE SAAT INI:
+// config.js
+require("dotenv").config();
+
+module.exports = {
+    connection: {
+        uri: process.env.MONGO_URI,
+    },
+};
+
+// connection.js
+const mongoose = require('mongoose');
+const config = require('../config/config');
+
+const connectDB = async () => {
+    try {
+        const conn = await mongoose.connect(config.connection.uri);
+        console.log(`MongoDB connected: ${conn.connection.db.databaseName}`);
+    } catch (error) {
+        console.error('MongoDB connection error:', error.message);
+        process.exit(1);
+    }
+};
+
+module.exports = connectDB;
+
+// index.js
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const connectDB = require('./src/database/connection');
+connectDB();
+
+const { userRoutes } = require('./src/routes');
+app.use('/api/users', userRoutes);
+
+app.listen(port, () => console.log(`Server listening on port ${port}!`));
+
+TODOLIST:
+1. beri aku saran struktur database mongodb nya.
+2. jelaskan bagaimana cara menyimpan gambar di cloudflare menggunakan api.
+3. buatkan migration dan seeder untuk collection.
+
+KETERANGAN:
+1. Proyek backend ini menggunakan dependency fakerjs, axios, bcryptjs, dotenv, express, joi, jsonwebtoken, mongoose, multer.
+2. Selalu tulis ulang seluruh endpoint atau function yang berubah, jangan hanya berupa potongan code nya saja.

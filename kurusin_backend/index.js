@@ -8,7 +8,9 @@ app.use(express.urlencoded({ extended: true }));
 const connectDB = require('./src/database/connection');
 connectDB();
 
-const { userRoutes } = require('./src/routes');
+const { userRoutes, exerciseRoutes, workoutRoutes } = require('./src/routes');
 app.use('/api/users', userRoutes);
+app.use('/api/exercises', exerciseRoutes);
+app.use('/api/workout', workoutRoutes);
 
 app.listen(port, () => console.log(`Server listening on port ${port}!`));

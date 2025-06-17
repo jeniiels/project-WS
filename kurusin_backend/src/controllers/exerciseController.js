@@ -68,9 +68,9 @@ const fetchExercises = async (req, res) => {
 // GET /api/exercise/:id_exercise
 const detailExercise = async (req, res) => {
         const { id_exercise } = req.params;
-        const { id_user } = req.query;
+        const { username } = req.query;
 
-        const user = await User.findOne({ id: id_user });
+        const user = await User.findOne({ username });
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }

@@ -1,6 +1,7 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const Food = require('../models/Food');
+const ApiLog = require('../models/ApiLog');
+const ApiTier = require('../models/ApiTier');
 const connectDB = require('../database/connection');
 
 const runMigration = async () => {
@@ -8,9 +9,10 @@ const runMigration = async () => {
         await connectDB();
 
         // Ensure indexes are created and schema is valid
-        await Food.init();
+        await ApiLog.init();
+        await ApiTier.init();
 
-        console.log('Migration: Food collection ready to use');
+        console.log('Migration: ApiLog and ApiTier collections ready to use');
         process.exit(0);
     } catch (err) {
         console.error('Migration error:', err);

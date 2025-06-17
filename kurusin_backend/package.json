@@ -1,12 +1,22 @@
 {
   "name": "kurusin_backend",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
+  "main": "index.js",  "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "migrate": "node migrations/createUsersCollection.js",
-    "seed": "node seeders/seedUsers.js"
+    "start": "node index.js",
+    "migrate": "node src/migrations/allMigration.js",
+    "migrate:users": "node src/migrations/userMigration.js",
+    "migrate:foods": "node src/migrations/foodMigration.js",
+    "migrate:workouts": "node src/migrations/migrationWorkouts.js",
+    "migrate:exercises": "node src/migrations/exerciseMigration.js",
+    "migrate:api": "node src/migrations/apiMigration.js",
+    "seed": "node src/seeders/seederAll.js",
+    "seed:users": "node src/seeders/seederUsers.js",
+    "seed:foods": "node src/seeders/seederFoods.js",
+    "seed:exercises": "node src/seeders/seederExercises.js",
+    "seed:workouts": "node src/seeders/seederWorkouts.js",
+    "seed:api": "node src/seeders/seederApiData.js"
   },
   "keywords": [],
   "author": "",

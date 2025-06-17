@@ -63,6 +63,16 @@ const foodSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
-}, { timestamps: true });
+}, {
+    // Menghilangkan __v dari output JSON
+    versionKey: false,
+    // Mengubah _id menjadi id dan menghapus _id saat dikonversi ke JSON
+    toJSON: {
+        transform: function (doc, ret) {
+            delete ret._id;
+        }
+    },
+    timestamps: true 
+});
 
-module.exports = mongoose.model('Food', foodSchema, 'foods');
+    module.exports = mongoose.model('Food', foodSchema, 'foods');

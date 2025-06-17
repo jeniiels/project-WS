@@ -1,115 +1,76 @@
 const { default:axios } = require("axios");
-const User = require("../models/User");
+const { User } = require("../models");
 require("dotenv").config();
 
-// GET  /api/exercises?equipment=none&muscles=none
-const fetchExercises = async (req, res) => {
-    const { equipment, muscles } = req.query;
-    let options = null;
+// GET /api/exercises
+const getAll = async (req, res) => {
 
-    if (equipment == 'none' && muscles == 'none') {
-        options = {
-            method: 'GET',
-            url: `https://exercisedb.p.rapidapi.com/exercises`,
-            params: {
-                limit: '100',
-                offset: '0'
-            },
-            headers: {
-                'x-rapidapi-key': process.env.RAPIDAPI_APIKEY,
-                'x-rapidapi-host': 'exercisedb.p.rapidapi.com'
-            }
-        };
-    }
-    else if (equipment != 'none') {
-        options = {
-            method: 'GET',
-            url: `https://exercisedb.p.rapidapi.com/exercises/equipment/${equipment}`,
-            params: {
-                limit: '100',
-                offset: '0'
-            },
-            headers: {
-                'x-rapidapi-key': process.env.RAPIDAPI_APIKEY,
-                'x-rapidapi-host': 'exercisedb.p.rapidapi.com'
-            }
-        };
-    }
-    else if (muscles != 'none') {
-        options = {
-            method: 'GET',
-            url: `https://exercisedb.p.rapidapi.com/exercises/bodyPart/${muscles}`,
-            params: {
-                limit: '100',
-                offset: '0'
-            },
-            headers: {
-                'x-rapidapi-key': process.env.RAPIDAPI_APIKEY,
-                'x-rapidapi-host': 'exercisedb.p.rapidapi.com'
-            }
-        };
-    }
-
-    try {
-		const response = await axios.request(options);
-        const result = response.data.map(exercise => ({
-            id: exercise.id,
-            name: exercise.name,
-            equipment: exercise.equipment,
-            muscles: [exercise.target, ...(exercise.secondaryMuscles || [])],
-            img: exercise.gifUrl || ""
-        }));
-        return res.status(200).json(result);
-	} catch (error) {
-		console.error(error);
-	}
 };
 
-// GET /api/exercise/:id_exercise
-const detailExercise = async (req, res) => {
-        const { id_exercise } = req.params;
-        const { id_user } = req.query;
+// GET /api/exercises/:id
+const getOne = async (req, res) => {
+    const { id_exercise } = req.params;
+    const { id_user } = req.query;
 
-        const user = await User.findOne({ id: id_user });
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
+    const user = await User.findOne({ id: id_user });
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
+
+    let heaviest_weight = 0;
+    let best_set_volume = 0;
+
+
+    
+    const options = {
+        method: 'GET',
+        url: `https://exercisedb.p.rapidapi.com/exercises/exercise/${id_exercise}`,
+        headers: {
+          'x-rapidapi-key': process.env.RAPIDAPI_APIKEY,
+          'x-rapidapi-host': 'exercisedb.p.rapidapi.com'
         }
+    };
 
-        let heaviest_weight = 0;
-        let best_set_volume = 0;
+    try {
+        const response = await axios.request(options);
 
         
-        const options = {
-            method: 'GET',
-            url: `https://exercisedb.p.rapidapi.com/exercises/exercise/${id_exercise}`,
-            headers: {
-              'x-rapidapi-key': process.env.RAPIDAPI_APIKEY,
-              'x-rapidapi-host': 'exercisedb.p.rapidapi.com'
-            }
-        };
 
-        try {
-            const response = await axios.request(options);
-
-            
-
-            const result = {
-                id: response.data.id,
-                name: response.data.name,
-                equipment: response.data.equipment,
-                muscles: [response.data.target, ...(response.data.secondaryMuscles || [])],
-                gif: response.data.gifUrl || "",
-                steps: response.data.instructions,
-                heaviest_weight,
-                best_set_volume
-            }
-            return res.status(200).json(result);
-        } catch (error) {
-            console.error(error);
+        const result = {
+            id: response.data.id,
+            name: response.data.name,
+            equipment: response.data.equipment,
+            muscles: [response.data.target, ...(response.data.secondaryMuscles || [])],
+            gif: response.data.gifUrl || "",
+            steps: response.data.instructions,
+            heaviest_weight,
+            best_set_volume
         }
+        return res.status(200).json(result);
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+// POST /api/exercises
+const create = async (req, res) => {
+
+};
+
+// PUT /api/exercises/:id
+const update = async (req, res) => {
+
+};
+
+// DELETE /api/exercises/:id
+const remove = async (req, res) => {
+    
 };
 
 module.exports = { 
-    fetchExercises,
-    detailExercise
+    getAll,
+    getOne,
+    create,
+    update,
+    remove,
 }

@@ -2,28 +2,47 @@ const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { User } = require("../models");
 
-const getAllUsers = async (req, res) => {
-    const users = await User.find();
-    return res.status(200).json({ users});
+// GET /api/users
+const getAll = async (req, res) => {
+    
 };
 
+// GET /api/users/:id
+const getOne = async (req, res) => {
+
+};
+
+// POST /api/users
+const create = async (req, res) => {
+
+};
+
+// PUT /api/users/:id
+const update = async (req, res) => {
+
+};
+
+// DELETE /api/users/:id
+const remove = async (req, res) => {
+
+};
+
+// POST /api/users/login
+const login = async (req, res) => {
+
+};
+
+// POST /api/users/register
 const register = async (req, res) => {
-    try {
-        const { name, email, password } = req.body;
-        
-        const registerSchema = Joi.object({
-            name: Joi.string().min(3).max(30).required(),
-            email: Joi.string().email().required(),
-            password: Joi.string().min(6).max(20).required(),
-        });
     
-        res.status(201).json({ message: 'User registered successfully', user: { name, email } });
-    } catch (error) {
-        res.status(500).json({ message: 'Error registering user', error });
-    }
 }
 
 module.exports = {
-    getAllUsers,
-    register,
+    getAll,
+    getOne,
+    create,
+    update,
+    remove,
+    login,
+    register
 };

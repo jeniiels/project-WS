@@ -1,0 +1,93 @@
+COLLECTION & MONGOOSE:
+- users
+- foods
+- exercises
+- workouts
+- foodhistories
+- workouthistories
+- apilogs
+- apitiers
+
+CRUD MASTER:
+- users
+- foods
+- exercises
+- workouts
+
+TRANSACTION:
+- food history
+- workout history
+
+MULTER:
+- foto profile user
+- foto scan makanan
+
+MIGRATION & SEEDER:
+- users
+- foods
+- workouts
+- apilogs
+- apitiers
+
+JOI:
+- buat semua endpoint POST
+
+[DALLEN] --- 8
+- GET /api/foods (MDP)
+- GET /api/foods/:id (MDP)
+- POST /api/foods
+- PUT /api/foods/:id
+- DELETE /api/foods/:id
+- GET /api/diary (MDP)
+- GET /api/fetch -> exerciseDB
+- POST /api/scan (MDP) -> multer
+
+---
+foodController
+---
+
+[ALDO] --- 9
+- GET /api/workouts
+- GET /api/workouts/:id (MDP)
+- POST /api/workouts (MDP)
+- PUT /api/workouts/:id
+- DELETE /api/workouts/:id
+- GET /api/logs/:username
+- POST /api/subscribe
+- middleware checkSubscription
+- middleware updateApiHit
+
+---
+workoutController, apiController, middlewares
+---
+
+[FARRAH] --- 9
+- GET /api/users
+- GET /api/users/:username (MDP)
+- POST /api/users -> multer
+- PUT /api/users/:id
+- DELETE /api/users/:id
+- POST /api/login (MDP)
+- POST /api/register (MDP)
+- middleware checkApiKey
+- middleware checkRole
+++ library: express rate limit 
+// buat membatasi login request per IP
+
+---
+userController, middlewares
+---
+
+[JENNY] --- 8
+- GET /api/exercises (MDP)
+- GET /api/exercises/:id (MDP)
+- POST /api/exercises
+- PUT /api/exercises/:id
+- DELETE /api/exercises/:id
+- GET /api/recommendation (MDP) -> aistudio
+- GET /api/calories (MDP) -> aistudio
+- migration & seeder
+
+---
+exerciseController, otherController, migrations, seeders
+---

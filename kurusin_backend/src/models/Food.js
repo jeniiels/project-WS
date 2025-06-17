@@ -22,7 +22,9 @@ const nutrientFactSchema = new mongoose.Schema({
     karoten_total: { type: Number, default: 0 },
     air: { type: Number, default: 0 },
     abu: { type: Number, default: 0 }
-}, { _id: false });
+}, { 
+    _id: false 
+});
 
 const foodSchema = new mongoose.Schema({
     id: {
@@ -63,6 +65,9 @@ const foodSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
-}, { timestamps: true });
+}, { 
+    timestamps: false,
+    versionKey: false
+});
 
 module.exports = mongoose.model('Food', foodSchema, 'foods');

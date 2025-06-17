@@ -9,7 +9,7 @@ const exerciseSetSchema = new Schema({
     sets: [
         { 
             type: String, 
-            required: true 
+            required: true
         }
     ]
 }, { 
@@ -17,7 +17,7 @@ const exerciseSetSchema = new Schema({
 });
 
 const workoutSchema = new Schema({
-    id_user: { 
+    username: { 
         type: String, 
         required: true 
     },
@@ -30,6 +30,9 @@ const workoutSchema = new Schema({
         required: true 
     },
     exercises: [ exerciseSetSchema ]
+}, {
+    timestamps: true,
+    versionKey: false
 });
 
 module.exports = mongoose.model('Workout', workoutSchema, 'workouts');

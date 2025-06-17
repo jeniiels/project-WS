@@ -22,7 +22,9 @@ const nutrientFactSchema = new mongoose.Schema({
     karoten_total: { type: Number, default: 0 },
     air: { type: Number, default: 0 },
     abu: { type: Number, default: 0 }
-}, { _id: false });
+}, { 
+    _id: false 
+});
 
 const foodSchema = new mongoose.Schema({
     id: {
@@ -63,16 +65,6 @@ const foodSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
-}, {
-    // Menghilangkan __v dari output JSON
-    versionKey: false,
-    // Mengubah _id menjadi id dan menghapus _id saat dikonversi ke JSON
-    toJSON: {
-        transform: function (doc, ret) {
-            delete ret._id;
-        }
-    },
-    timestamps: true 
-});
+}, { timestamps: true });
 
     module.exports = mongoose.model('Food', foodSchema, 'foods');

@@ -17,7 +17,7 @@ const exerciseSetSchema = new Schema({
 });
 
 const workoutSchema = new Schema({
-    username: { 
+    id_user: { 
         type: String, 
         required: true 
     },

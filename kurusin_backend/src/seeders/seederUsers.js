@@ -10,9 +10,10 @@ const seedUsers = async () => {
 
         await User.deleteMany();
 
-        const users = [];        for (let i = 0; i < 20; i++) {
+        const users = [];
+
+        for (let i = 0; i < 20; i++) {
         users.push({
-            username: faker.internet.username(),
             name: faker.person.fullName(),
             email: faker.internet.email(),
             password: faker.internet.password({ length: 10, memorable: true }),

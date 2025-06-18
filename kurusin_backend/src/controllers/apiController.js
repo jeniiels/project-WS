@@ -21,6 +21,14 @@ const getLogs = async (req, res) => {
     try {
         const { username } = req.params;
         
+        // Check if the authenticated user is trying to access their own logs or has admin role
+        if (req.user.username !== username && req.user.role !== 'admin') {
+            return res.status(403).json({
+                success: false,
+                message: "Access denied. You can only view your own logs or need admin privileges."
+            });
+        }
+        
         // Check if user exists
         const user = await User.findOne({ username });
         if (!user) {
@@ -30,14 +38,16 @@ const getLogs = async (req, res) => {
             });
         }
         
-        // For now, we'll get all API logs since the Apilog model doesn't have username field
-        // In a real scenario, you might want to link logs to users via apiKey or add username field to Apilog
-        const logs = await Apilog.find().sort({ timestamp: -1 }).limit(100);
+        // Get API logs for the specific user using apiKey field (which stores username)
+        const logs = await Apilog.find({ apiKey: username })
+                                  .sort({ timestamp: -1 })
+                                  .limit(100);
         
         res.json({
             success: true,
             message: `Successfully retrieved API logs for user: ${username}`,
             data: logs,
+            totalLogs: logs.length,
             username: username
         });
     } catch (error) {
@@ -52,22 +62,16 @@ const getLogs = async (req, res) => {
 // POST /api/subscribe
 const subscribe = async (req, res) => {
     try {
-        const { username, tier } = req.body;
+        const { tier } = req.body;
+        
+        // Use authenticated user's username instead of from request body
+        const username = req.user.username;
         
         // Validate required fields
-        if (!username || !tier) {
+        if (!tier) {
             return res.status(400).json({
                 success: false,
-                message: "Username and tier are required"
-            });
-        }
-        
-        // Check if user exists
-        const user = await User.findOne({ username });
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: "User not found"
+                message: "Tier is required"
             });
         }
         
@@ -77,6 +81,15 @@ const subscribe = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message: "Invalid tier. Valid tiers are: free, basic, premium"
+            });
+        }
+        
+        // Check if user exists (should exist since authenticated)
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
             });
         }
         

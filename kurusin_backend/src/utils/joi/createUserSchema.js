@@ -25,14 +25,20 @@ const createUserSchema = Joi.object({
             'string.empty': 'Email tidak boleh kosong.',
             'string.email': 'Format email tidak valid.',
             'any.required': 'Email wajib diisi.'
-        }),
-
-    password: Joi.string()
+        }),    password: Joi.string()
         .required()
         .messages({
             'string.base': 'Password harus berupa teks.',
             'string.empty': 'Password tidak boleh kosong.',
             'any.required': 'Password wajib diisi.'
+        }),
+
+    role: Joi.string()
+        .valid('user', 'admin')
+        .optional()
+        .messages({
+            'string.base': 'Role harus berupa teks.',
+            'any.only': 'Role harus berupa user atau admin.'
         }),
 });
 

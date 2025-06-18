@@ -1,13 +1,14 @@
-const { Workout } = require("../models");
+const { Workout, User } = require("../models");
 const createWorkoutSchema = require("../utils/joi/createWorkoutSchema");
 
-// GET /api/workouts
+// GET /api/workouts - Get workouts for the authenticated user
 const getAll = async (req, res) => {
     try {
-        const workouts = await Workout.find();
+        // Get workouts for the authenticated user only
+        const workouts = await Workout.find({ username: req.user.username });
         res.json({
             success: true,
-            message: "Successfully retrieved all workouts",
+            message: "Successfully retrieved workouts",
             data: workouts
         });
     } catch (error) {
@@ -19,16 +20,19 @@ const getAll = async (req, res) => {
     }
 };
 
-// GET /api/workouts/:id
+// GET /api/workouts/:id - Get specific workout for authenticated user
 const getOne = async (req, res) => {
     try {
         const { id } = req.params;
-        const workout = await Workout.findById(id);
+        const workout = await Workout.findOne({ 
+            _id: id, 
+            username: req.user.username 
+        });
         
         if (!workout) {
             return res.status(404).json({
                 success: false,
-                message: "Workout not found"
+                message: "Workout not found or you don't have permission to access it"
             });
         }
         
@@ -46,11 +50,17 @@ const getOne = async (req, res) => {
     }
 };
 
-// POST /api/workouts
+// POST /api/workouts - Create new workout
 const create = async (req, res) => {
     try {
+        // Prepare data with username from authenticated user
+        const workoutData = {
+            ...req.body,
+            username: req.user.username  // Override username with authenticated user
+        };
+
         // Validate input using Joi schema
-        const { error, value } = createWorkoutSchema.validate(req.body);
+        const { error, value } = createWorkoutSchema.validate(workoutData);
         
         if (error) {
             return res.status(400).json({
@@ -78,13 +88,19 @@ const create = async (req, res) => {
     }
 };
 
-// PUT /api/workouts/:id
+// PUT /api/workouts/:id - Update workout for authenticated user
 const update = async (req, res) => {
     try {
         const { id } = req.params;
         
+        // Prepare data with username from authenticated user
+        const workoutData = {
+            ...req.body,
+            username: req.user.username  // Ensure username stays the same
+        };
+        
         // Validate input using Joi schema
-        const { error, value } = createWorkoutSchema.validate(req.body);
+        const { error, value } = createWorkoutSchema.validate(workoutData);
         
         if (error) {
             return res.status(400).json({
@@ -94,9 +110,9 @@ const update = async (req, res) => {
             });
         }
         
-        // Update workout by ID
-        const updatedWorkout = await Workout.findByIdAndUpdate(
-            id, 
+        // Update workout only if it belongs to the authenticated user
+        const updatedWorkout = await Workout.findOneAndUpdate(
+            { _id: id, username: req.user.username },
             value, 
             { new: true, runValidators: true }
         );
@@ -104,7 +120,7 @@ const update = async (req, res) => {
         if (!updatedWorkout) {
             return res.status(404).json({
                 success: false,
-                message: "Workout not found"
+                message: "Workout not found or you don't have permission to update it"
             });
         }
         
@@ -122,16 +138,19 @@ const update = async (req, res) => {
     }
 };
 
-// DELETE /api/workouts/:id
+// DELETE /api/workouts/:id - Delete workout for authenticated user
 const remove = async (req, res) => {
     try {
         const { id } = req.params;
-        const deletedWorkout = await Workout.findByIdAndDelete(id);
+        const deletedWorkout = await Workout.findOneAndDelete({ 
+            _id: id, 
+            username: req.user.username 
+        });
         
         if (!deletedWorkout) {
             return res.status(404).json({
                 success: false,
-                message: "Workout not found"
+                message: "Workout not found or you don't have permission to delete it"
             });
         }
         

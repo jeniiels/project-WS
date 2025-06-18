@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { User } = require('../models');
+const { User, Apilog } = require('../models');
 
 const checkApiKey = async (req, res, next) => {
     try {
@@ -21,9 +21,7 @@ const checkApiKey = async (req, res, next) => {
         } else {
             // If no "Bearer " prefix, treat the whole header as token
             token = authHeader;
-        }
-
-        // Verify JWT token
+        }        // Verify JWT token
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secretkey');
         
         // Check if user still exists
@@ -33,9 +31,7 @@ const checkApiKey = async (req, res, next) => {
                 success: false,
                 message: 'User no longer exists'
             });
-        }
-
-        // Add user data to request object
+        }        // Add user data to request object
         req.user = {
             username: decoded.username,
             email: decoded.email,
@@ -44,6 +40,23 @@ const checkApiKey = async (req, res, next) => {
             subscription: decoded.subscription,
             apiQuota: decoded.apiQuota
         };
+
+        // Save API log
+        try {
+            await Apilog.create({
+                apiKey: decoded.username, // Using username as identifier since we're using JWT
+                endpoint: req.originalUrl || req.url,
+                method: req.method,
+                timestamp: new Date(),
+                statusCode: null, // Will be updated in response
+                userAgent: req.headers['user-agent'] || '',
+                ip: req.ip || req.connection.remoteAddress || req.socket.remoteAddress || 
+                    (req.connection.socket ? req.connection.socket.remoteAddress : null)
+            });
+        } catch (logError) {
+            // Don't fail the request if logging fails, just log the error
+            console.log('API logging error:', logError.message);
+        }
 
         next();
     } catch (error) {

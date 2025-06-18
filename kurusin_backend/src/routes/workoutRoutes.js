@@ -1,10 +1,12 @@
 const express = require('express');
 const { getAll, getOne, create, update, remove } = require('../controllers/workoutController');
 const checkApiKey = require('../middlewares/checkApiKey');
+const updateApiLog = require('../middlewares/updateApiLog');
 const router = express.Router();
 
-// Apply checkApiKey middleware to all workout routes
+// Apply middlewares to all workout routes
 router.use(checkApiKey);
+router.use(updateApiLog);
 
 router.get('/', getAll);
 router.get('/:id', getOne); 

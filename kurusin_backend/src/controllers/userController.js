@@ -1,7 +1,23 @@
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { User } = require("../models");
+const { User, Apitier } = require("../models");
 const createUserSchema = require("../utils/joi/createUserSchema");
+
+// Helper function to get API quota for subscription tier
+const getApiQuotaForTier = async (subscriptionTier) => {
+    try {
+        const tier = await Apitier.findOne({ name: subscriptionTier });
+        return tier ? tier.monthlyQuota : 0;
+    } catch (error) {
+        // Default quotas if Apitier collection is not populated
+        const defaultQuotas = {
+            'free': 100,
+            'basic': 1000,
+            'premium': 10000
+        };
+        return defaultQuotas[subscriptionTier] || 0;
+    }
+};
 
 // GET /api/users
 const getAll = async (req, res) => {
@@ -105,13 +121,91 @@ const login = async (req, res) => {
         return res.status(401).json({ message: "Invalid password" });
     }
 
-    const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET || "secretkey", { expiresIn: "1h" });
+    // Generate JWT token with user data including new fields
+    const tokenPayload = {
+        username: user.username,
+        email: user.email,
+        saldo: user.saldo,
+        subscription: user.subscription,
+        apiQuota: user.apiQuota
+    };
+
+    const token = jwt.sign(
+        tokenPayload, 
+        process.env.JWT_SECRET || "secretkey", 
+        { expiresIn: process.env.JWT_EXPIRATION || "1h" }
+    );
+    
     return res.status(200).json({ token });
 };
 
 // POST /api/users/register
 const register = async (req, res) => {
-    
+    try {
+        // Validate input using Joi schema
+        await createUserSchema.validateAsync(req.body);
+    } catch (error) {
+        return res.status(400).json({ message: error.details[0].message });
+    }
+
+    const { username, name, email, password } = req.body;
+
+    // Check if username already exists
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+        return res.status(409).json({ message: "Username sudah digunakan" });
+    }
+
+    // Check if email already exists
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
+        return res.status(409).json({ message: "Email sudah digunakan" });
+    }
+
+    try {
+        // Hash password
+        const hashedPassword = await bcryptjs.hash(password, 10);
+        
+        // Get API quota for free tier (default)
+        const initialApiQuota = await getApiQuotaForTier('free');
+        
+        // Create new user
+        const newUser = await User.create({
+            username,
+            name,
+            email,
+            password: hashedPassword,
+            saldo: 0,
+            subscription: 'free',
+            apiQuota: initialApiQuota
+        });
+
+        // Generate JWT token with user data
+        const tokenPayload = {
+            username: newUser.username,
+            email: newUser.email,
+            saldo: newUser.saldo,
+            subscription: newUser.subscription,
+            apiQuota: newUser.apiQuota
+        };
+
+        const token = jwt.sign(
+            tokenPayload, 
+            process.env.JWT_SECRET || "secretkey", 
+            { expiresIn: process.env.JWT_EXPIRATION || "1h" }
+        );
+
+        return res.status(201).json({
+            message: "Registrasi berhasil",
+            token: token
+        });
+
+    } catch (error) {
+        return res.status(500).json({ 
+            message: "Terjadi kesalahan saat mendaftar", 
+            error: error.message 
+        });
+    }
 }
 
 module.exports = {

@@ -1,16 +1,17 @@
 {
   "name": "kurusin_backend",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
+  "main": "index.js",  "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
     "migrate": "node src/migrations/migrationAll.js",
+    "migrate:apitier": "node src/migrations/migrationApitier.js",
     "migrate:user": "node src/migrations/migrationUser.js",
     "migrate:food": "node src/migrations/migrationFood.js",
     "migrate:exercise": "node src/migrations/migrationExercise.js",
     "migrate:workout": "node src/migrations/migrationWorkout.js",
     "seed": "node src/seeders/seederAll.js",
+    "seed:apitier": "node src/seeders/seederApitier.js",
     "seed:user": "node src/seeders/seederUser.js",
     "seed:food": "node src/seeders/seederFood.js",
     "seed:exercise": "node src/seeders/seederExercise.js",

@@ -6,7 +6,7 @@ const apitierSchema = new Schema({
         type: String,
         required: true,
         unique: true,
-        enum: ['Free', 'Pro', 'Enterprise']
+        enum: ['free', 'basic', 'premium']
     },
     monthlyQuota: {
         type: Number,

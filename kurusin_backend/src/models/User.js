@@ -20,6 +20,23 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    saldo: {
+        type: Number,
+        default: 0
+    },
+    subscription: {
+        type: String,
+        enum: ['free', 'basic', 'premium'],
+        default: 'free'
+    },
+    subscriptionDate: {
+        type: Date,
+        default: null
+    },
+    apiQuota: {
+        type: Number,
+        default: 0
+    },
     createdAt: {
         type: Date,
         default: Date.now,

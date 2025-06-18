@@ -1,6 +1,6 @@
 // GET /api/diary
 const getDiary = async (req, res) => {
-
+    
 };
 
 // POST /api/scan

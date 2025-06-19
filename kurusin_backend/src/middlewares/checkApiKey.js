@@ -3,35 +3,17 @@ const { User, Apilog } = require('../models');
 
 const checkApiKey = async (req, res, next) => {
     try {
-        // Get token from Authorization header
         const authHeader = req.headers.authorization;
+        if (!authHeader) return res.status(401).json({ message: 'Access token is required.' });
         
-        if (!authHeader) {
-            return res.status(401).json({ 
-                success: false,
-                message: 'Access token is required. Please provide a valid JWT token in Authorization header.' 
-            });
-        }
-
         let token;
-        
-        // Handle both "Bearer token" and direct token formats
-        if (authHeader.startsWith('Bearer ')) {
-            token = authHeader.substring(7);
-        } else {
-            // If no "Bearer " prefix, treat the whole header as token
-            token = authHeader;
-        }        // Verify JWT token
+        if (authHeader.startsWith('Bearer ')) token = authHeader.substring(7);
+        else token = authHeader;
+
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secretkey');
+        const user = await User.findOne({ username: decoded.username });
+        if (!user) return res.status(401).json({ message: 'User not found!' });
         
-        // Check if user still exists
-        const user = await User.findOne({ username: decoded.username }).select('-password');
-        if (!user) {
-            return res.status(401).json({
-                success: false,
-                message: 'User no longer exists'
-            });
-        }        // Add user data to request object
         req.user = {
             username: decoded.username,
             email: decoded.email,
@@ -41,7 +23,6 @@ const checkApiKey = async (req, res, next) => {
             apiQuota: decoded.apiQuota
         };
 
-        // Save API log
         try {
             await Apilog.create({
                 apiKey: decoded.username, // Using username as identifier since we're using JWT

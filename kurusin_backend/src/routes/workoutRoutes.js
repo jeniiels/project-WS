@@ -4,7 +4,6 @@ const checkApiKey = require('../middlewares/checkApiKey');
 const updateApiLog = require('../middlewares/updateApiLog');
 const router = express.Router();
 
-// Apply middlewares to all workout routes
 router.use(checkApiKey);
 router.use(updateApiLog);
 

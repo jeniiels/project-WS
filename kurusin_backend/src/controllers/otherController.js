@@ -33,8 +33,9 @@ const fetchExercise = async (req, res) => {
             img: exercise.gifUrl || ""
         }));
         return res.status(200).json(result);
-	} catch (error) {
-		console.error(error);
+	} catch (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
 	}
 };
 

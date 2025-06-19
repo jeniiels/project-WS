@@ -1,23 +1,8 @@
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { User, Apitier } = require("../models");
+const { User } = require("../models");
 const createUserSchema = require("../utils/joi/createUserSchema");
-
-// Helper function to get API quota for subscription tier
-const getApiQuotaForTier = async (subscriptionTier) => {
-    try {
-        const tier = await Apitier.findOne({ name: subscriptionTier });
-        return tier ? tier.monthlyQuota : 0;
-    } catch (error) {
-        // Default quotas if Apitier collection is not populated
-        const defaultQuotas = {
-            'free': 100,
-            'basic': 1000,
-            'premium': 10000
-        };
-        return defaultQuotas[subscriptionTier] || 0;
-    }
-};
+const getApiQuotaForTier = require("../utils/helper/getApiQuotaforTier");
 
 // GET /api/users
 const getAll = async (req, res) => {
@@ -29,9 +14,7 @@ const getAll = async (req, res) => {
 const getOne = async (req, res) => {
     const { username } = req.params;
     const result = await User.findOne({ username: username });
-    if (!result) {
-        return res.status(404).json({ message: "User not found" });
-    }
+    if (!result) return res.status(404).json({ message: "User not found!" });
     return res.status(200).json(result);
 };
 
@@ -45,21 +28,12 @@ const create = async (req, res) => {
 
     const { username, name, email, password, role } = req.body;
 
-    // Check if user already exists
     const existingUser = await User.findOne({ username });
-    if (existingUser) {
-        return res.status(409).json({ message: "Username already exists" });
-    }
-
-    // Check if email already exists
+    if (existingUser) return res.status(400).json({ message: "Username already exists!" });
     const existingEmail = await User.findOne({ email });
-    if (existingEmail) {
-        return res.status(409).json({ message: "Email already exists" });
-    }
-
-    const hashedPassword = await bcryptjs.hash(password, 10);
+    if (existingEmail) return res.status(400).json({ message: "Email already exists!" });
     
-    // Get API quota for free tier (default)
+    const hashedPassword = await bcryptjs.hash(password, 10);
     const initialApiQuota = await getApiQuotaForTier('free');
     
     const newUser = await User.create({
@@ -73,10 +47,8 @@ const create = async (req, res) => {
         apiQuota: initialApiQuota
     });
 
-    // Remove password from response
     const userResponse = newUser.toObject();
     delete userResponse.password;
-
     return res.status(201).json(userResponse);
 };
 
@@ -85,23 +57,16 @@ const update = async (req, res) => {
     const { username } = req.params;
     const { name, email, password, role } = req.body;
 
-    // Find user by username
     const user = await User.findOne({ username: username });
-    if (!user) {
-        return res.status(404).json({ message: "User not found" });
-    }
+    if (!user) return res.status(404).json({ message: "User not found!" });
 
-    // Prepare update object
     const updateData = {};
-    
     if (name) updateData.name = name;
     if (email) updateData.email = email;
     if (role && ['user', 'admin'].includes(role)) updateData.role = role;
     
-    if (password) {
-        updateData.password = await bcryptjs.hash(password, 10);
-    }
-
+    if (password) updateData.password = await bcryptjs.hash(password, 10);
+    
     try {
         const updatedUser = await User.findOneAndUpdate(
             { username: username },
@@ -110,43 +75,37 @@ const update = async (req, res) => {
         );
 
         return res.status(200).json(updatedUser);
-    } catch (error) {
-        return res.status(500).json({ 
-            message: "Error updating user", 
-            error: error.message 
-        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
     }
 };
 
 // DELETE /api/users/:id
 const remove = async (req, res) => {
-    const { username } = req.params;
+    try {
+        const { username } = req.params;
+        const deletedUser = await User.findOneAndDelete({ username });
 
-    // Find user by username
-    const user = await User.findOne({ username: username });
-    if (!user) {
-        return res.status(404).json({ message: "User not found" });
+        if (!deletedUser) return res.status(404).json({ message: "User not found!" });
+
+        return res.status(200).json(deletedUser);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
     }
-
-    // Delete user
-    await User.deleteOne({ username: username });
-    return res.status(200).json({ message: "User deleted successfully" });
 };
 
 // POST /api/users/login
 const login = async (req, res) => {
     const { username, password } = req.body;
 
-    // Find user by username
     const user = await User.findOne({ username: username });
-    if (!user) {
-        return res.status(404).json({ message: "User not found" });
-    }
-
+    if (!user) return res.status(404).json({ message: "User not found" });
+    
     const isPasswordValid = user && await bcryptjs.compare(password, user.password);
-    if (!isPasswordValid) {
-        return res.status(401).json({ message: "Invalid password" });
-    }    // Generate JWT token with user data including new fields
+    if (!isPasswordValid) return res.status(401).json({ message: "Invalid password" });
+    
     const tokenPayload = {
         username: user.username,
         email: user.email,
@@ -166,73 +125,7 @@ const login = async (req, res) => {
 };
 
 // POST /api/users/register
-const register = async (req, res) => {
-    try {
-        // Validate input using Joi schema
-        await createUserSchema.validateAsync(req.body);
-    } catch (error) {
-        return res.status(400).json({ message: error.details[0].message });
-    }    const { username, name, email, password, role } = req.body;
-
-    // Check if username already exists
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
-        return res.status(409).json({ message: "Username sudah digunakan" });
-    }
-
-    // Check if email already exists
-    const existingEmail = await User.findOne({ email });
-    if (existingEmail) {
-        return res.status(409).json({ message: "Email sudah digunakan" });
-    }
-
-    try {
-        // Hash password
-        const hashedPassword = await bcryptjs.hash(password, 10);
-        
-        // Get API quota for free tier (default)
-        const initialApiQuota = await getApiQuotaForTier('free');
-        
-        // Create new user
-        const newUser = await User.create({
-            username,
-            name,
-            email,
-            password: hashedPassword,
-            role: role || 'user',
-            saldo: 0,
-            subscription: 'free',
-            apiQuota: initialApiQuota
-        });
-
-        // Generate JWT token with user data
-        const tokenPayload = {
-            username: newUser.username,
-            email: newUser.email,
-            role: newUser.role,
-            saldo: newUser.saldo,
-            subscription: newUser.subscription,
-            apiQuota: newUser.apiQuota
-        };
-
-        const token = jwt.sign(
-            tokenPayload, 
-            process.env.JWT_SECRET || "secretkey", 
-            { expiresIn: process.env.JWT_EXPIRATION || "1h" }
-        );
-
-        return res.status(201).json({
-            message: "Registrasi berhasil",
-            token: token
-        });
-
-    } catch (error) {
-        return res.status(500).json({ 
-            message: "Terjadi kesalahan saat mendaftar", 
-            error: error.message 
-        });
-    }
-}
+const register = create;
 
 module.exports = {
     getAll,

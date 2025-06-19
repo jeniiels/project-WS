@@ -1,7 +1,7 @@
 const express = require('express');
 const { login, register } = require('../controllers/userController');
 const { getLogs, subscribe } = require('../controllers/apiController');
-const { getDiary, scan, fetchExercise, fetchRecommendation, fetchCalory } = require('../controllers/otherController');
+const { getDiary, scan, fetchExercise, fetchRecommendation, calculateCalory } = require('../controllers/otherController');
 const checkApiKey = require('../middlewares/checkApiKey');
 const updateApiLog = require('../middlewares/updateApiLog');
 const router = express.Router();
@@ -18,7 +18,7 @@ router.post('/scan', checkApiKey, updateApiLog, scan);
 
 // Public routes (no authentication required - external API fetches)
 router.get('/fetch', fetchExercise);
-router.get('/recomendation', fetchRecommendation);
-router.get('/calories', fetchCalory);
+router.get('/recommendation', fetchRecommendation);
+router.get('/calory', calculateCalory);
 
 module.exports = router;

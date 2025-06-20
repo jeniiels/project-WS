@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const workoutHistorySchema = new Schema({
-    id_user: {
+    username: {
         type: String,
         required: true,
         index: true

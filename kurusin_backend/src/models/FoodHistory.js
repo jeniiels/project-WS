@@ -46,7 +46,7 @@ const summarySchema = new Schema({
 });
 
 const foodHistorySchema = new Schema({
-    id_user: {
+    username: {
         type: String,
         required: true,
         index: true

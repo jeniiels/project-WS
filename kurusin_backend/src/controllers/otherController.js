@@ -2,7 +2,8 @@ const fs = require('fs');
 const getAiResponse = require("../utils/helper/getAiResponse");
 const getAiVisionResponse = require("../utils/helper/getAiVisionResponse");
 const getTodayDateString = require("../utils/helper/getTodayDateString");
-const { FoodHistory, WorkoutHistory } = require('../models');
+const { Exercise, FoodHistory, WorkoutHistory } = require('../models');
+const { default: axios } = require('axios');
 
 // GET /api/diary
 const getDiary = async (req, res) => {
@@ -97,6 +98,8 @@ const fetchExercise = async (req, res) => {
             muscles: [exercise.target, ...(exercise.secondaryMuscles || [])],
             img: exercise.gifUrl || ""
         }));
+
+        await Exercise.insertMany(result);
         return res.status(200).json(result);
 	} catch (err) {
         console.error(err);

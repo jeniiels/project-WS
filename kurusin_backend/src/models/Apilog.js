@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const apilogSchema = new Schema({
-    apiKey: {
+    username: {
         type: String,
         required: true,
         index: true

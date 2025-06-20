@@ -78,7 +78,7 @@ const update = async (req, res) => {
         }
 
         const updatedFood = await Food.findOneAndUpdate(
-            { id: id },
+            { id },
             { $set: updateData },
             { new: true, runValidators: true }
         );

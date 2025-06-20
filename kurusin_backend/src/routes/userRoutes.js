@@ -3,7 +3,10 @@ const { getAll, getOne, create, pp, update, remove, login, register } = require(
 const uploadUser = require('../utils/multer/uploadUser');
 const checkApiKey = require('../middlewares/checkApiKey');
 const checkRoles = require('../middlewares/checkRoles');
+const updateApiLog = require('../middlewares/updateApiLog');
 const router = express.Router();
+
+router.use(updateApiLog);
 
 router.get('/', getAll);
 router.get('/:username', getOne);

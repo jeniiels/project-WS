@@ -10,7 +10,7 @@ const getAll = async (req, res) => {
     try {
         const query = { ...req.query };
         const users = await User.find(query).select('-password -subscriptionDate -apiQuota -createdAt -updatedAt');
-        if (!user) return res.status(404).json({ message: "User not found!" });
+        if (!users) return res.status(404).json({ message: "User not found!" });
         return res.status(200).json(users);
     } catch (err) {
         console.error(err);

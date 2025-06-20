@@ -23,25 +23,9 @@ const checkApiKey = async (req, res, next) => {
             apiQuota: decoded.apiQuota
         };
 
-        try {
-            await Apilog.create({
-                apiKey: decoded.username, // Using username as identifier since we're using JWT
-                endpoint: req.originalUrl || req.url,
-                method: req.method,
-                timestamp: new Date(),
-                statusCode: null, // Will be updated in response
-                userAgent: req.headers['user-agent'] || '',
-                ip: req.ip || req.connection.remoteAddress || req.socket.remoteAddress || 
-                    (req.connection.socket ? req.connection.socket.remoteAddress : null)
-            });
-        } catch (logError) {
-            // Don't fail the request if logging fails, just log the error
-            console.log('API logging error:', logError.message);
-        }
-
         next();
     } catch (error) {
-        console.log('Token verification error:', error.message); // Debug log
+        console.log('Token verification error:', error.message);
         if (error.name === 'JsonWebTokenError') {
             return res.status(401).json({
                 success: false,

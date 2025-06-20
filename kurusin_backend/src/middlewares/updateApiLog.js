@@ -1,31 +1,19 @@
 const { Apilog } = require('../models');
 
-const updateApiLog = async (req, res, next) => {
-    // Store original send method
-    const originalSend = res.send;
+const updateApiLog = (req, res, next) => {
+    res.on('finish', async () => {
+        const log = new Apilog({
+            username: req.user?.username || 'anonymous',
+            endpoint: req.originalUrl,
+            method: req.method,
+            statusCode: res.statusCode,
+            userAgent: req.get('User-Agent'),
+            ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress
+        });
     
-    // Override res.send to capture status code
-    res.send = function(data) {
-        // Update the most recent API log for this user with the status code
-        if (req.user && req.user.username) {
-            Apilog.findOneAndUpdate(
-                { 
-                    apiKey: req.user.username,
-                    endpoint: req.originalUrl || req.url,
-                    method: req.method,
-                    statusCode: null
-                },
-                { statusCode: res.statusCode },
-                { sort: { timestamp: -1 } }
-            ).catch(error => {
-                console.log('Error updating API log status code:', error.message);
-            });
-        }
-        
-        // Call original send method
-        return originalSend.call(this, data);
-    };
-    
+        await log.save();
+    });
+  
     next();
 };
 

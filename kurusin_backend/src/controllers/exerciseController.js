@@ -1,6 +1,7 @@
 const { default:axios } = require("axios");
 const { User, Exercise } = require("../models");
 const createExerciseSchema = require("../utils/joi/createExerciseSchema");
+const WorkoutHistory = require("../models/WorkoutHistory");
 require("dotenv").config();
 
 // GET /api/exercises
@@ -29,39 +30,26 @@ const getAll = async (req, res) => {
 // GET /api/exercises/:id
 const getOne = async (req, res) => {
     const { id_exercise } = req.params;
-    const { id_user } = req.query;
+    const { username } = req.query;
 
-    const user = await User.findOne({ id: id_user });
-    if (!user) {
-        return res.status(404).json({ message: "User not found" });
-    }
-
+    let steps = [];
     let heaviest_weight = 0;
     let best_set_volume = 0;
 
+    const exercise = await Exercise.findOne({ id: id_exercise });
+    if (!exercise) return res.status(404).json({ message: "Exercise not found!" });
 
-    
-    const options = {
-        method: 'GET',
-        url: `https://exercisedb.p.rapidapi.com/exercises/exercise/${id_exercise}`,
-        headers: {
-          'x-rapidapi-key': process.env.RAPIDAPI_APIKEY,
-          'x-rapidapi-host': 'exercisedb.p.rapidapi.com'
-        }
-    };
+    const history = await WorkoutHistory.findOne({ username, id_exercise });
+    if (history) {
+        steps = history.steps || [];
+        heaviest_weight = history.heaviest_weight || 0;
+        best_set_volume = history.best_set_volume || 0;
+    }
 
     try {
-        const response = await axios.request(options);
-
-        
-
         const result = {
-            id: response.data.id,
-            name: response.data.name,
-            equipment: response.data.equipment,
-            muscles: [response.data.target, ...(response.data.secondaryMuscles || [])],
-            gif: response.data.gifUrl || "",
-            steps: response.data.instructions,
+            ...exercise.toObject(),
+            steps,
             heaviest_weight,
             best_set_volume
         }
@@ -80,7 +68,7 @@ const create = async (req, res) => {
         return res.status(400).json({ message: error.details[0].message });
     }
 
-    const { id, name, equipment, muscles, img } = req.body;
+    const { name, equipment, muscles, img } = req.body;
 
     const latest = await Exercise.findOne().sort({ id: -1 });
     const lastId = latest ? parseInt(latest.id) : 0;
@@ -93,19 +81,18 @@ const create = async (req, res) => {
 // PUT /api/exercises/:id
 const update = async (req, res) => {
     const { id } = req.params;
-
     let updateData = { ...req.body };
 
     try {
-    let updatedExercise = await Exercise.findOneAndUpdate(
-        { id },
-        { $set: updateData },
-        { new: true, runValidators: true }
-    );
+        let updatedExercise = await Exercise.findOneAndUpdate(
+            { id },
+            { $set: updateData },
+            { new: true, runValidators: true }
+        );
 
-    if (!updatedExercise) return res.status(404).json({ message: 'Exercise not found' });
-    
-    return res.status(200).json(updatedExercise);
+        if (!updatedExercise) return res.status(404).json({ message: 'Exercise not found!' });
+        
+        return res.status(200).json(updatedExercise);
     } catch (err) {
         console.error(err);
         return res.status(500).json({ message: err.message });

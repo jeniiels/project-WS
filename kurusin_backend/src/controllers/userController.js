@@ -61,7 +61,6 @@ const getOne = async (req, res) => {
     }
 };
 
-
 // POST /api/users
 const create = async (req, res) => {
     try {

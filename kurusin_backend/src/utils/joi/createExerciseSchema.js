@@ -1,10 +1,6 @@
 const Joi = require('joi');
 
 const createExerciseSchema = Joi.object({
-    id: Joi.string().required().messages({
-        'any.required': 'ID wajib diisi',
-        'string.base': 'ID harus berupa string'
-        }),
     name: Joi.string().required().messages({
         'any.required': 'Nama latihan wajib diisi',
         'string.base': 'Nama latihan harus berupa string'

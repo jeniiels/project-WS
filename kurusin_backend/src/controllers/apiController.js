@@ -20,9 +20,10 @@ const subscribe = async (req, res) => {
         const username = req.user.username;
 
         if (!tier) return res.status(400).json({ message: "Tier is required!" });
-        
         const validTiers = ['free', 'basic', 'premium'];
         if (!validTiers.includes(tier.toLowerCase()))  return res.status(400).json({ message: "Tier is invalid!" });
+
+        if (req.user.subscription == tier.toLowerCase()) return res.status(400).json({ message: "You are already subscribed to this tier!" });
 
         const newApiQuota = await getApiQuotaForTier(tier.toLowerCase());
         const updatedUser = await User.findOneAndUpdate(

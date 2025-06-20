@@ -7,7 +7,7 @@ require("dotenv").config();
 // GET /api/exercises
 const getAll = async (req, res) => {
     try {
-        const { equipment, muscles } = req.query;
+        let { equipment, muscles } = req.query;
 
         if (equipment == 'none' || muscles == 'none') {
             equipment = '';

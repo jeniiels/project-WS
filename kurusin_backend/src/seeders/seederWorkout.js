@@ -21,7 +21,10 @@ mongoose.connect(process.env.MONGO_URI).then(async () => {
             })
         }));
 
+        const id = 'WO' + (i + 1).toString().padStart(3, '0');
+
         workouts.push(new Workout({
+            id,
             username: faker.string.uuid(),
             time: faker.date.recent().toISOString(),
             duration: `${faker.number.int({ min: 20, max: 90 })} minutes`,

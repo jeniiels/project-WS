@@ -3,7 +3,7 @@ const { getAll, getOne, create, update, remove } = require('../controllers/exerc
 const router = express.Router();
 
 router.get('/', getAll);
-router.get('/:id', getOne);
+router.get('/:id_exercise', getOne);
 router.post('/', create);
 router.put('/:id', update);
 router.delete('/:id', remove)

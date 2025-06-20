@@ -41,7 +41,8 @@ const create = async (req, res) => {
             return res.status(400).json({ message: error.details[0].message });
         }
 
-        const newWorkout = new Workout(value);
+        const id = await generateWorkoutId();
+        const newWorkout = new Workout({ ...value, id });
         const savedWorkout = await newWorkout.save();
         
         return res.status(201).json(savedWorkout);
@@ -68,7 +69,7 @@ const update = async (req, res) => {
         }
         
         const updatedWorkout = await Workout.findOneAndUpdate(
-            { _id: id, username: req.user.username },
+            { id, username: req.user.username },
             value, 
             { new: true, runValidators: true }
         );
@@ -87,7 +88,7 @@ const remove = async (req, res) => {
     try {
         const { id } = req.params;
         const deletedWorkout = await Workout.findOneAndDelete({ 
-            _id: id, 
+            id, 
             username: req.user.username 
         });
         

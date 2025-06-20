@@ -22,7 +22,7 @@ mongoose.connect(process.env.MONGO_URI).then(async () => {
         }));
 
         workouts.push(new Workout({
-            id_user: faker.string.uuid(),
+            username: faker.string.uuid(),
             time: faker.date.recent().toISOString(),
             duration: `${faker.number.int({ min: 20, max: 90 })} minutes`,
             exercises: exercises

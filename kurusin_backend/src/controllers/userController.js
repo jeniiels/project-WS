@@ -6,16 +6,28 @@ const getApiQuotaForTier = require("../utils/helper/getApiQuotaforTier");
 
 // GET /api/users
 const getAll = async (req, res) => {
-    const result = await User.find();
-    return res.status(200).json(result);
+    try {
+        const query = { ...req.query };
+        const users = await User.find(query).select('-password -subscriptionDate -apiQuota -createdAt -updatedAt');
+        if (!user) return res.status(404).json({ message: "User not found!" });
+        return res.status(200).json(users);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: err.message });
+    }
 };
 
 // GET /api/users/:username
 const getOne = async (req, res) => {
-    const { username } = req.params;
-    const result = await User.findOne({ username: username });
-    if (!result) return res.status(404).json({ message: "User not found!" });
-    return res.status(200).json(result);
+    try {
+        const { username } = req.params;
+        const user = await User.findOne({ username }).select('-password');
+        if (!user) return res.status(404).json({ message: "User not found!" });
+        return res.status(200).json(user);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: err.message });
+    }
 };
 
 // POST /api/users

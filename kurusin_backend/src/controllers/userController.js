@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const { User } = require("../models");
 const createUserSchema = require("../utils/joi/createUserSchema");
 const getApiQuotaForTier = require("../utils/helper/getApiQuotaforTier");
+const {FoodHistory, WorkoutHistory} = require("../models");
 
 // GET /api/users
 const getAll = async (req, res) => {
@@ -17,18 +18,49 @@ const getAll = async (req, res) => {
     }
 };
 
-// GET /api/users/:username
 const getOne = async (req, res) => {
     try {
         const { username } = req.params;
-        const user = await User.findOne({ username }).select('-password');
+
+        const user = await User.findOne({ username })
+            .select('username email createdAt');
+
         if (!user) return res.status(404).json({ message: "User not found!" });
-        return res.status(200).json(user);
+
+        const workoutHistories = await WorkoutHistory.find({ username }).lean();
+        const workoutHistoryFormatted = workoutHistories.map(w => ({
+            type: 'workout',
+            timestamp: w.timestamp,
+            ...w
+        }));
+
+        const foodHistories = await FoodHistory.find({ username }).lean();
+        const foodHistoryFormatted = foodHistories.map(f => ({
+            type: 'food',
+            timestamp: new Date(f.createdAt),
+            ...f
+        }));
+
+        const fullHistory = [...workoutHistoryFormatted, ...foodHistoryFormatted]
+            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+        return res.status(200).json({
+            status: "success",
+            data: {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                createdAt: user.createdAt,
+                history: fullHistory
+            }
+        });
+
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ message: err.message });
-    }
+        return res.status(500).json({ message: err.message });
+    }
 };
+
 
 // POST /api/users
 const create = async (req, res) => {
@@ -59,18 +91,17 @@ const create = async (req, res) => {
         apiQuota: initialApiQuota
     });
 
-    const userResponse = newUser.toObject();
-    delete userResponse.password;
-    return res.status(201).json(userResponse);
+    return res.status(201).json(newUser);
+};
+
+const pp = async (req, res) => {
+    return res.status(200).json({ message: "Profile picture uploaded!" })
 };
 
 // PUT /api/users/:username
 const update = async (req, res) => {
     const { username } = req.params;
     const { name, email, password, role } = req.body;
-
-    const user = await User.findOne({ username: username });
-    if (!user) return res.status(404).json({ message: "User not found!" });
 
     const updateData = {};
     if (name) updateData.name = name;
@@ -80,11 +111,17 @@ const update = async (req, res) => {
     if (password) updateData.password = await bcryptjs.hash(password, 10);
     
     try {
-        const updatedUser = await User.findOneAndUpdate(
+        let updatedUser = await User.findOneAndUpdate(
             { username: username },
             updateData,
             { new: true, runValidators: true }
         );
+
+        updatedUser = updatedUser.toObject();
+        updatedUser.password = password;
+        delete updatedUser._id;
+        delete updatedUser.createdAt;
+        delete updatedUser.updatedAt;
 
         return res.status(200).json(updatedUser);
     } catch (err) {
@@ -133,7 +170,7 @@ const login = async (req, res) => {
         { expiresIn: process.env.JWT_EXPIRATION || "1h" }
     );
     
-    return res.status(200).json({ token });
+    return res.status(200).json({ status: "Login successful!", token });
 };
 
 // POST /api/users/register
@@ -143,6 +180,7 @@ module.exports = {
     getAll,
     getOne,
     create,
+    pp,
     update,
     remove,
     login,

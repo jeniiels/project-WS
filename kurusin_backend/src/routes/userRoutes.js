@@ -1,12 +1,16 @@
 const express = require('express');
-const { getAll, getOne, create, update, remove, login, register } = require('../controllers/userController');
+const { getAll, getOne, create, pp, update, remove, login, register } = require('../controllers/userController');
+const uploadUser = require('../utils/multer/uploadUser');
+const checkApiKey = require('../middlewares/checkApiKey');
+const checkRoles = require('../middlewares/checkRoles');
 const router = express.Router();
 
 router.get('/', getAll);
 router.get('/:username', getOne);
 router.post('/', create);
-router.put('/:username', update);
-router.delete('/:username', remove);
+router.post('/upload', checkApiKey, uploadUser.single("profile"), pp);
+router.put('/:username', checkApiKey, checkRoles("admin"), update);
+router.delete('/:username', checkApiKey, checkRoles("admin"), remove);
 router.post('/login', login);
 router.post('/register', register);
 

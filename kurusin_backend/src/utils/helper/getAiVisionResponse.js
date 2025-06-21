@@ -1,6 +1,8 @@
+const { default: axios } = require("axios");
+
 const getAiVisionResponse = async (prompt, imageBase64, mimeType) => {
     const apiKey = process.env.GOOGLE_APIKEY;
-    const model = 'gemini-pro-vision';
+    const model = 'gemini-2.5-flash';
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
     if (!apiKey) {

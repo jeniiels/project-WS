@@ -11,7 +11,15 @@ const exerciseSetSchema = new Schema({
             type: String, 
             required: true
         }
-    ]
+    ],
+    heaviest_weight: {
+        type: String,
+        default: ""
+    },
+    best_set_volume: {
+        type: String,
+        default: ""
+    }
 }, { 
     _id: false 
 });
@@ -22,19 +30,11 @@ const workoutSchema = new Schema({
         required: true,
         unique: true
     },
-    username: { 
-        type: String, 
-        required: true 
-    },
-    time: { 
-        type: String, 
-        required: true 
-    },
-    duration: { 
-        type: String, 
-        required: true 
-    },
-    exercises: [ exerciseSetSchema ]
+    exercises: [ exerciseSetSchema ],
+    kalori_total: {
+        type: Number,
+        required: true
+    }
 }, {
     timestamps: true,
     versionKey: false

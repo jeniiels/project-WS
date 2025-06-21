@@ -4,11 +4,10 @@ const checkApiKey = require('../middlewares/checkApiKey');
 const updateApiLog = require('../middlewares/updateApiLog');
 const router = express.Router();
 
-router.use(checkApiKey);
 router.use(updateApiLog);
 
 router.get('/', getAll);
-router.get('/:id', getOne); 
+router.get('/:id', getOne);
 router.post('/', create);
 router.put('/:id', update);
 router.delete('/:id', remove);

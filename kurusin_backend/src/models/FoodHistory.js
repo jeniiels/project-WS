@@ -24,7 +24,7 @@ const foodEntrySchema = new Schema({
     }
 }, { _id: false });
 
-const summarySchema = new Schema({
+const summaryFoodSchema = new Schema({
     kalori: {
         type: Number,
         default: 0
@@ -56,7 +56,7 @@ const foodHistorySchema = new Schema({
         required: true
     },
     foods: [foodEntrySchema],
-    summary: summarySchema
+    summary: summaryFoodSchema
 }, {
     timestamps: true,
     versionKey: false

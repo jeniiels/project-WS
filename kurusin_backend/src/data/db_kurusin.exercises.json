@@ -1,0 +1,1409 @@
+[{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe82"
+  },
+  "id": "0001",
+  "name": "3/4 sit-up",
+  "equipment": "body weight",
+  "muscles": [
+    "abs",
+    "hip flexors",
+    "lower back"
+  ],
+  "img": "https://v2.exercisedb.io/image/IOpAYqzdlr9IUT"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe83"
+  },
+  "id": "0002",
+  "name": "45° side bend",
+  "equipment": "body weight",
+  "muscles": [
+    "abs",
+    "obliques"
+  ],
+  "img": "https://v2.exercisedb.io/image/MC9ah8eQjGxWqY"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe84"
+  },
+  "id": "0003",
+  "name": "air bike",
+  "equipment": "body weight",
+  "muscles": [
+    "abs",
+    "hip flexors"
+  ],
+  "img": "https://v2.exercisedb.io/image/2slhSI768XSqtp"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe85"
+  },
+  "id": "0006",
+  "name": "alternate heel touchers",
+  "equipment": "body weight",
+  "muscles": [
+    "abs",
+    "obliques"
+  ],
+  "img": "https://v2.exercisedb.io/image/ssZk83sTkdkj02"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe86"
+  },
+  "id": "0007",
+  "name": "alternate lateral pulldown",
+  "equipment": "cable",
+  "muscles": [
+    "lats",
+    "biceps",
+    "rhomboids"
+  ],
+  "img": "https://v2.exercisedb.io/image/HSqYQt-NXgeVyy"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe87"
+  },
+  "id": "0009",
+  "name": "assisted chest dip (kneeling)",
+  "equipment": "leverage machine",
+  "muscles": [
+    "pectorals",
+    "triceps",
+    "shoulders"
+  ],
+  "img": "https://v2.exercisedb.io/image/I9z4Diq2jkJV2J"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe88"
+  },
+  "id": "0010",
+  "name": "assisted hanging knee raise with throw down",
+  "equipment": "assisted",
+  "muscles": [
+    "abs",
+    "hip flexors",
+    "lower back"
+  ],
+  "img": "https://v2.exercisedb.io/image/raPmbl5Cnenn9D"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe89"
+  },
+  "id": "0011",
+  "name": "assisted hanging knee raise",
+  "equipment": "assisted",
+  "muscles": [
+    "abs",
+    "hip flexors"
+  ],
+  "img": "https://v2.exercisedb.io/image/q8Hm0-Abp4ABL6"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe8a"
+  },
+  "id": "0012",
+  "name": "assisted lying leg raise with lateral throw down",
+  "equipment": "assisted",
+  "muscles": [
+    "abs",
+    "hip flexors",
+    "obliques"
+  ],
+  "img": "https://v2.exercisedb.io/image/q48M7Fm9tLVs9S"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe8b"
+  },
+  "id": "0013",
+  "name": "assisted lying leg raise with throw down",
+  "equipment": "assisted",
+  "muscles": [
+    "abs",
+    "hip flexors",
+    "quadriceps"
+  ],
+  "img": "https://v2.exercisedb.io/image/yvi-9FN1LYTvHe"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe8c"
+  },
+  "id": "0014",
+  "name": "assisted motion russian twist",
+  "equipment": "medicine ball",
+  "muscles": [
+    "abs",
+    "obliques",
+    "lower back"
+  ],
+  "img": "https://v2.exercisedb.io/image/sSXjjEG7ps-Uxf"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe8d"
+  },
+  "id": "0015",
+  "name": "assisted parallel close grip pull-up",
+  "equipment": "leverage machine",
+  "muscles": [
+    "lats",
+    "biceps",
+    "forearms"
+  ],
+  "img": "https://v2.exercisedb.io/image/U597Giot-7mnvH"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe8e"
+  },
+  "id": "0016",
+  "name": "assisted prone hamstring",
+  "equipment": "assisted",
+  "muscles": [
+    "hamstrings",
+    "glutes",
+    "lower back"
+  ],
+  "img": "https://v2.exercisedb.io/image/PJgh7lQyUICkzz"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe8f"
+  },
+  "id": "0017",
+  "name": "assisted pull-up",
+  "equipment": "leverage machine",
+  "muscles": [
+    "lats",
+    "biceps",
+    "forearms"
+  ],
+  "img": "https://v2.exercisedb.io/image/waPPHPWdvTa7jy"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe90"
+  },
+  "id": "0018",
+  "name": "assisted standing triceps extension (with towel)",
+  "equipment": "assisted (towel)",
+  "muscles": [
+    "triceps",
+    "shoulders"
+  ],
+  "img": "https://v2.exercisedb.io/image/dyLa7O0Hugmbjb"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe91"
+  },
+  "id": "0019",
+  "name": "assisted triceps dip (kneeling)",
+  "equipment": "leverage machine",
+  "muscles": [
+    "triceps",
+    "chest",
+    "shoulders"
+  ],
+  "img": "https://v2.exercisedb.io/image/Bd2c1sh8Ew1Mff"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe92"
+  },
+  "id": "0020",
+  "name": "balance board",
+  "equipment": "body weight",
+  "muscles": [
+    "quads",
+    "calves",
+    "hamstrings",
+    "glutes"
+  ],
+  "img": "https://v2.exercisedb.io/image/yUkvr0kQYs38GW"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe93"
+  },
+  "id": "0022",
+  "name": "barbell pullover to press",
+  "equipment": "barbell",
+  "muscles": [
+    "lats",
+    "triceps",
+    "chest",
+    "shoulders"
+  ],
+  "img": "https://v2.exercisedb.io/image/GmEGZdQBLyh2sv"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe94"
+  },
+  "id": "0023",
+  "name": "barbell alternate biceps curl",
+  "equipment": "barbell",
+  "muscles": [
+    "biceps",
+    "forearms"
+  ],
+  "img": "https://v2.exercisedb.io/image/4HqG5Zvdjc0TGM"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe95"
+  },
+  "id": "0024",
+  "name": "barbell bench front squat",
+  "equipment": "barbell",
+  "muscles": [
+    "quads",
+    "hamstrings",
+    "glutes",
+    "calves"
+  ],
+  "img": "https://v2.exercisedb.io/image/tuHraqffFC8bkw"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe96"
+  },
+  "id": "0025",
+  "name": "barbell bench press",
+  "equipment": "barbell",
+  "muscles": [
+    "pectorals",
+    "triceps",
+    "shoulders"
+  ],
+  "img": "https://v2.exercisedb.io/image/0lBkKsV9lum1j7"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe97"
+  },
+  "id": "0026",
+  "name": "barbell bench squat",
+  "equipment": "barbell",
+  "muscles": [
+    "quads",
+    "glutes",
+    "hamstrings",
+    "calves"
+  ],
+  "img": "https://v2.exercisedb.io/image/E8GgEdOMsOXA6j"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe98"
+  },
+  "id": "0027",
+  "name": "barbell bent over row",
+  "equipment": "barbell",
+  "muscles": [
+    "upper back",
+    "biceps",
+    "forearms"
+  ],
+  "img": "https://v2.exercisedb.io/image/9mpd-bW7o9YagT"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe99"
+  },
+  "id": "0028",
+  "name": "barbell clean and press",
+  "equipment": "barbell",
+  "muscles": [
+    "quads",
+    "hamstrings",
+    "glutes",
+    "shoulders",
+    "triceps"
+  ],
+  "img": "https://v2.exercisedb.io/image/LhMZTKemqMo8dn"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe9a"
+  },
+  "id": "0029",
+  "name": "barbell clean-grip front squat",
+  "equipment": "barbell",
+  "muscles": [
+    "glutes",
+    "quadriceps",
+    "hamstrings",
+    "calves",
+    "core"
+  ],
+  "img": "https://v2.exercisedb.io/image/9ANq8nuHlukmMq"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe9b"
+  },
+  "id": "0030",
+  "name": "barbell close-grip bench press",
+  "equipment": "barbell",
+  "muscles": [
+    "triceps",
+    "chest",
+    "shoulders"
+  ],
+  "img": "https://v2.exercisedb.io/image/2mOwwCW3H7tMCN"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe9c"
+  },
+  "id": "0031",
+  "name": "barbell curl",
+  "equipment": "barbell",
+  "muscles": [
+    "biceps",
+    "forearms"
+  ],
+  "img": "https://v2.exercisedb.io/image/l3rQahMtom1NUR"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe9d"
+  },
+  "id": "0032",
+  "name": "barbell deadlift",
+  "equipment": "barbell",
+  "muscles": [
+    "glutes",
+    "hamstrings",
+    "lower back"
+  ],
+  "img": "https://v2.exercisedb.io/image/O7U-jh8LZwnNH9"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe9e"
+  },
+  "id": "0033",
+  "name": "barbell decline bench press",
+  "equipment": "barbell",
+  "muscles": [
+    "pectorals",
+    "triceps",
+    "shoulders"
+  ],
+  "img": "https://v2.exercisedb.io/image/l28IjPbgJsj6OR"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fe9f"
+  },
+  "id": "0034",
+  "name": "barbell decline bent arm pullover",
+  "equipment": "barbell",
+  "muscles": [
+    "lats",
+    "triceps",
+    "chest"
+  ],
+  "img": "https://v2.exercisedb.io/image/K0dAEXhINB0NA8"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fea0"
+  },
+  "id": "0035",
+  "name": "barbell decline close grip to skull press",
+  "equipment": "barbell",
+  "muscles": [
+    "triceps",
+    "chest",
+    "shoulders"
+  ],
+  "img": "https://v2.exercisedb.io/image/k0F0wZA3MX7R67"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fea1"
+  },
+  "id": "0036",
+  "name": "barbell decline wide-grip press",
+  "equipment": "barbell",
+  "muscles": [
+    "pectorals",
+    "triceps",
+    "shoulders"
+  ],
+  "img": "https://v2.exercisedb.io/image/RoU3pxr8U1-9mZ"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fea2"
+  },
+  "id": "0037",
+  "name": "barbell decline wide-grip pullover",
+  "equipment": "barbell",
+  "muscles": [
+    "lats",
+    "triceps",
+    "chest"
+  ],
+  "img": "https://v2.exercisedb.io/image/PeKcHCkcwqzF6y"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fea3"
+  },
+  "id": "0038",
+  "name": "barbell drag curl",
+  "equipment": "barbell",
+  "muscles": [
+    "biceps",
+    "forearms"
+  ],
+  "img": "https://v2.exercisedb.io/image/Da0eYTByDqSgiV"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fea4"
+  },
+  "id": "0039",
+  "name": "barbell front chest squat",
+  "equipment": "barbell",
+  "muscles": [
+    "glutes",
+    "quadriceps",
+    "hamstrings",
+    "calves",
+    "core"
+  ],
+  "img": "https://v2.exercisedb.io/image/nyXL9eyHTPa52V"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fea5"
+  },
+  "id": "0040",
+  "name": "barbell front raise and pullover",
+  "equipment": "barbell",
+  "muscles": [
+    "pectorals",
+    "deltoids",
+    "triceps"
+  ],
+  "img": "https://v2.exercisedb.io/image/TSoUTd36wYLk8D"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fea6"
+  },
+  "id": "0041",
+  "name": "barbell front raise",
+  "equipment": "barbell",
+  "muscles": [
+    "delts",
+    "biceps",
+    "triceps"
+  ],
+  "img": "https://v2.exercisedb.io/image/erscNFuHzDQjQd"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fea7"
+  },
+  "id": "0042",
+  "name": "barbell front squat",
+  "equipment": "barbell",
+  "muscles": [
+    "glutes",
+    "quadriceps",
+    "hamstrings",
+    "calves",
+    "core"
+  ],
+  "img": "https://v2.exercisedb.io/image/819-3sFI0Rk1yK"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fea8"
+  },
+  "id": "0043",
+  "name": "barbell full squat",
+  "equipment": "barbell",
+  "muscles": [
+    "glutes",
+    "quadriceps",
+    "hamstrings",
+    "calves",
+    "core"
+  ],
+  "img": "https://v2.exercisedb.io/image/rX1qy0kakcvQAe"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fea9"
+  },
+  "id": "0044",
+  "name": "barbell good morning",
+  "equipment": "barbell",
+  "muscles": [
+    "hamstrings",
+    "lower back"
+  ],
+  "img": "https://v2.exercisedb.io/image/7n7iPcLWfC7aL6"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293feaa"
+  },
+  "id": "0045",
+  "name": "barbell guillotine bench press",
+  "equipment": "barbell",
+  "muscles": [
+    "pectorals",
+    "shoulders",
+    "triceps"
+  ],
+  "img": "https://v2.exercisedb.io/image/BvZEowxr-Kg6jM"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293feab"
+  },
+  "id": "0046",
+  "name": "barbell hack squat",
+  "equipment": "barbell",
+  "muscles": [
+    "glutes",
+    "quadriceps",
+    "hamstrings",
+    "calves"
+  ],
+  "img": "https://v2.exercisedb.io/image/LxGRkxU9SSgH0p"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293feac"
+  },
+  "id": "0047",
+  "name": "barbell incline bench press",
+  "equipment": "barbell",
+  "muscles": [
+    "pectorals",
+    "shoulders",
+    "triceps"
+  ],
+  "img": "https://v2.exercisedb.io/image/eOOW-I0bEnfQJw"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fead"
+  },
+  "id": "0048",
+  "name": "barbell incline reverse-grip press",
+  "equipment": "barbell",
+  "muscles": [
+    "triceps",
+    "chest",
+    "shoulders"
+  ],
+  "img": "https://v2.exercisedb.io/image/c34DhzJ0FKoDiA"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293feae"
+  },
+  "id": "0049",
+  "name": "barbell incline row",
+  "equipment": "barbell",
+  "muscles": [
+    "upper back",
+    "biceps",
+    "forearms"
+  ],
+  "img": "https://v2.exercisedb.io/image/9infQJj7NjHGzw"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293feaf"
+  },
+  "id": "0050",
+  "name": "barbell incline shoulder raise",
+  "equipment": "barbell",
+  "muscles": [
+    "serratus anterior",
+    "deltoids",
+    "trapezius"
+  ],
+  "img": "https://v2.exercisedb.io/image/O-njjIBJGAYNYN"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293feb0"
+  },
+  "id": "0051",
+  "name": "barbell jefferson squat",
+  "equipment": "barbell",
+  "muscles": [
+    "glutes",
+    "quadriceps",
+    "hamstrings",
+    "calves"
+  ],
+  "img": "https://v2.exercisedb.io/image/9WDTJasOt4ICkG"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293feb1"
+  },
+  "id": "0052",
+  "name": "barbell jm bench press",
+  "equipment": "barbell",
+  "muscles": [
+    "triceps",
+    "chest",
+    "shoulders"
+  ],
+  "img": "https://v2.exercisedb.io/image/TsO2UR78XPpOLZ"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293feb2"
+  },
+  "id": "0053",
+  "name": "barbell jump squat",
+  "equipment": "barbell",
+  "muscles": [
+    "glutes",
+    "quadriceps",
+    "hamstrings",
+    "calves"
+  ],
+  "img": "https://v2.exercisedb.io/image/L-Pdy8vf38Ehu0"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293feb3"
+  },
+  "id": "0054",
+  "name": "barbell lunge",
+  "equipment": "barbell",
+  "muscles": [
+    "glutes",
+    "quadriceps",
+    "hamstrings",
+    "calves"
+  ],
+  "img": "https://v2.exercisedb.io/image/ztDEk-feX70Aka"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293feb4"
+  },
+  "id": "0055",
+  "name": "barbell lying close-grip press",
+  "equipment": "barbell",
+  "muscles": [
+    "triceps",
+    "chest",
+    "shoulders"
+  ],
+  "img": "https://v2.exercisedb.io/image/wtAl7b1YmiQViC"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293feb5"
+  },
+  "id": "0056",
+  "name": "barbell lying close-grip triceps extension",
+  "equipment": "barbell",
+  "muscles": [
+    "triceps",
+    "shoulders"
+  ],
+  "img": "https://v2.exercisedb.io/image/6n9nezYqhHk2U0"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293feb6"
+  },
+  "id": "0057",
+  "name": "barbell lying extension",
+  "equipment": "barbell",
+  "muscles": [
+    "triceps",
+    "shoulders"
+  ],
+  "img": "https://v2.exercisedb.io/image/pqIKxFUFGf-WBw"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293feb7"
+  },
+  "id": "0058",
+  "name": "barbell lying lifting (on hip)",
+  "equipment": "barbell",
+  "muscles": [
+    "glutes",
+    "hamstrings",
+    "quadriceps"
+  ],
+  "img": "https://v2.exercisedb.io/image/ieH-TzUUoxssjB"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293feb8"
+  },
+  "id": "0059",
+  "name": "barbell lying preacher curl",
+  "equipment": "barbell",
+  "muscles": [
+    "biceps",
+    "forearms"
+  ],
+  "img": "https://v2.exercisedb.io/image/Ksv47F2mRi9E9i"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293feb9"
+  },
+  "id": "0060",
+  "name": "barbell lying triceps extension skull crusher",
+  "equipment": "barbell",
+  "muscles": [
+    "triceps",
+    "shoulders"
+  ],
+  "img": "https://v2.exercisedb.io/image/rnFzCCbDD1AJHY"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293feba"
+  },
+  "id": "0061",
+  "name": "barbell lying triceps extension",
+  "equipment": "barbell",
+  "muscles": [
+    "triceps",
+    "shoulders"
+  ],
+  "img": "https://v2.exercisedb.io/image/hiGC43jQe29SHm"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293febb"
+  },
+  "id": "0063",
+  "name": "barbell narrow stance squat",
+  "equipment": "barbell",
+  "muscles": [
+    "glutes",
+    "quadriceps",
+    "hamstrings",
+    "calves"
+  ],
+  "img": "https://v2.exercisedb.io/image/hfkmFmBmz6fSgi"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293febc"
+  },
+  "id": "0064",
+  "name": "barbell one arm bent over row",
+  "equipment": "barbell",
+  "muscles": [
+    "upper back",
+    "biceps",
+    "forearms"
+  ],
+  "img": "https://v2.exercisedb.io/image/aYguj4MLO1Z9F9"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293febd"
+  },
+  "id": "0065",
+  "name": "barbell one arm floor press",
+  "equipment": "barbell",
+  "muscles": [
+    "triceps",
+    "chest",
+    "shoulders"
+  ],
+  "img": "https://v2.exercisedb.io/image/8D4colEm37hXJj"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293febe"
+  },
+  "id": "0066",
+  "name": "barbell one arm side deadlift",
+  "equipment": "barbell",
+  "muscles": [
+    "glutes",
+    "hamstrings",
+    "quadriceps",
+    "lower back"
+  ],
+  "img": "https://v2.exercisedb.io/image/xSdtWwRH800AUA"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293febf"
+  },
+  "id": "0067",
+  "name": "barbell one arm snatch",
+  "equipment": "barbell",
+  "muscles": [
+    "delts",
+    "traps",
+    "forearms",
+    "core"
+  ],
+  "img": "https://v2.exercisedb.io/image/a9MUIQ5uCNXedW"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fec0"
+  },
+  "id": "0068",
+  "name": "barbell one leg squat",
+  "equipment": "barbell",
+  "muscles": [
+    "quads",
+    "glutes",
+    "hamstrings",
+    "calves"
+  ],
+  "img": "https://v2.exercisedb.io/image/6Ko-2460AlYaZZ"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fec1"
+  },
+  "id": "0069",
+  "name": "barbell overhead squat",
+  "equipment": "barbell",
+  "muscles": [
+    "quads",
+    "glutes",
+    "hamstrings",
+    "calves",
+    "core"
+  ],
+  "img": "https://v2.exercisedb.io/image/KeTfI3Hvlro7wz"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fec2"
+  },
+  "id": "0070",
+  "name": "barbell preacher curl",
+  "equipment": "barbell",
+  "muscles": [
+    "biceps",
+    "forearms"
+  ],
+  "img": "https://v2.exercisedb.io/image/jofdP8UcsNywaJ"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fec3"
+  },
+  "id": "0071",
+  "name": "barbell press sit-up",
+  "equipment": "barbell",
+  "muscles": [
+    "abs",
+    "shoulders",
+    "chest"
+  ],
+  "img": "https://v2.exercisedb.io/image/okD8SmC1qBfFw1"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fec4"
+  },
+  "id": "0072",
+  "name": "barbell prone incline curl",
+  "equipment": "barbell",
+  "muscles": [
+    "biceps",
+    "forearms"
+  ],
+  "img": "https://v2.exercisedb.io/image/RKOQMV7I4df3xC"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fec5"
+  },
+  "id": "0073",
+  "name": "barbell pullover",
+  "equipment": "barbell",
+  "muscles": [
+    "lats",
+    "chest",
+    "triceps"
+  ],
+  "img": "https://v2.exercisedb.io/image/o501sstWzu5eYB"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fec6"
+  },
+  "id": "0074",
+  "name": "barbell rack pull",
+  "equipment": "barbell",
+  "muscles": [
+    "glutes",
+    "hamstrings",
+    "lower back"
+  ],
+  "img": "https://v2.exercisedb.io/image/EygrEz73creeNM"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fec7"
+  },
+  "id": "0075",
+  "name": "barbell rear delt raise",
+  "equipment": "barbell",
+  "muscles": [
+    "delts",
+    "traps",
+    "rhomboids"
+  ],
+  "img": "https://v2.exercisedb.io/image/A6JD6qvK3ertCi"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fec8"
+  },
+  "id": "0076",
+  "name": "barbell rear delt row",
+  "equipment": "barbell",
+  "muscles": [
+    "delts",
+    "trapezius",
+    "rhomboids",
+    "biceps"
+  ],
+  "img": "https://v2.exercisedb.io/image/tCgSe6dnZxccP5"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fec9"
+  },
+  "id": "0077",
+  "name": "barbell rear lunge v. 2",
+  "equipment": "barbell",
+  "muscles": [
+    "glutes",
+    "quadriceps",
+    "hamstrings",
+    "calves"
+  ],
+  "img": "https://v2.exercisedb.io/image/wdIa1GX2k-fony"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293feca"
+  },
+  "id": "0078",
+  "name": "barbell rear lunge",
+  "equipment": "barbell",
+  "muscles": [
+    "glutes",
+    "quadriceps",
+    "hamstrings",
+    "calves"
+  ],
+  "img": "https://v2.exercisedb.io/image/VkqyUTluVJjWwy"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fecb"
+  },
+  "id": "0079",
+  "name": "barbell reverse wrist curl v. 2",
+  "equipment": "barbell",
+  "muscles": [
+    "forearms",
+    "biceps",
+    "brachialis"
+  ],
+  "img": "https://v2.exercisedb.io/image/cfJGgbIf5GjNn9"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fecc"
+  },
+  "id": "0080",
+  "name": "barbell reverse curl",
+  "equipment": "barbell",
+  "muscles": [
+    "biceps",
+    "forearms"
+  ],
+  "img": "https://v2.exercisedb.io/image/ThZyK6SZjQLpFc"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fecd"
+  },
+  "id": "0081",
+  "name": "barbell reverse preacher curl",
+  "equipment": "barbell",
+  "muscles": [
+    "biceps",
+    "forearms"
+  ],
+  "img": "https://v2.exercisedb.io/image/W2qUgetxSmBmQ5"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fece"
+  },
+  "id": "0082",
+  "name": "barbell reverse wrist curl",
+  "equipment": "barbell",
+  "muscles": [
+    "forearms",
+    "biceps",
+    "brachialis"
+  ],
+  "img": "https://v2.exercisedb.io/image/PBR3RuWLeUmhfQ"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fecf"
+  },
+  "id": "0083",
+  "name": "barbell rollerout from bench",
+  "equipment": "barbell",
+  "muscles": [
+    "abs",
+    "shoulders",
+    "triceps"
+  ],
+  "img": "https://v2.exercisedb.io/image/VWZu19RiO3RAa5"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fed0"
+  },
+  "id": "0084",
+  "name": "barbell rollerout",
+  "equipment": "barbell",
+  "muscles": [
+    "abs",
+    "lower back"
+  ],
+  "img": "https://v2.exercisedb.io/image/4qWEb0Y6OFawhS"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fed1"
+  },
+  "id": "0085",
+  "name": "barbell romanian deadlift",
+  "equipment": "barbell",
+  "muscles": [
+    "glutes",
+    "hamstrings",
+    "lower back"
+  ],
+  "img": "https://v2.exercisedb.io/image/imna8-plv5DVDb"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fed2"
+  },
+  "id": "0086",
+  "name": "barbell seated behind head military press",
+  "equipment": "barbell",
+  "muscles": [
+    "delts",
+    "triceps",
+    "upper back"
+  ],
+  "img": "https://v2.exercisedb.io/image/gXAg6QUujvM21J"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fed3"
+  },
+  "id": "0087",
+  "name": "barbell seated bradford rocky press",
+  "equipment": "barbell",
+  "muscles": [
+    "delts",
+    "triceps",
+    "upper back"
+  ],
+  "img": "https://v2.exercisedb.io/image/VQk-BS39vvZDpB"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fed4"
+  },
+  "id": "0088",
+  "name": "barbell seated calf raise",
+  "equipment": "barbell",
+  "muscles": [
+    "calves",
+    "hamstrings",
+    "quadriceps"
+  ],
+  "img": "https://v2.exercisedb.io/image/AkLgVg5nBG5SRM"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fed5"
+  },
+  "id": "0089",
+  "name": "barbell seated close-grip concentration curl",
+  "equipment": "barbell",
+  "muscles": [
+    "biceps",
+    "forearms"
+  ],
+  "img": "https://v2.exercisedb.io/image/2nmgC0a2uYvxgH"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fed6"
+  },
+  "id": "0090",
+  "name": "barbell seated good morning",
+  "equipment": "barbell",
+  "muscles": [
+    "glutes",
+    "hamstrings",
+    "lower back"
+  ],
+  "img": "https://v2.exercisedb.io/image/bpWv54N7k6daQo"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fed7"
+  },
+  "id": "0091",
+  "name": "barbell seated overhead press",
+  "equipment": "barbell",
+  "muscles": [
+    "delts",
+    "triceps",
+    "upper back"
+  ],
+  "img": "https://v2.exercisedb.io/image/shEQsey-evjeOx"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fed8"
+  },
+  "id": "0092",
+  "name": "barbell seated overhead triceps extension",
+  "equipment": "barbell",
+  "muscles": [
+    "triceps",
+    "shoulders"
+  ],
+  "img": "https://v2.exercisedb.io/image/0fvTmrUPwWQ04O"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fed9"
+  },
+  "id": "0094",
+  "name": "barbell seated twist",
+  "equipment": "barbell",
+  "muscles": [
+    "abs",
+    "obliques",
+    "lower back"
+  ],
+  "img": "https://v2.exercisedb.io/image/rCdBXIOF1psTtL"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293feda"
+  },
+  "id": "0095",
+  "name": "barbell shrug",
+  "equipment": "barbell",
+  "muscles": [
+    "traps",
+    "shoulders"
+  ],
+  "img": "https://v2.exercisedb.io/image/Q747hEuSopxqBI"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fedb"
+  },
+  "id": "0096",
+  "name": "barbell side bent v. 2",
+  "equipment": "barbell",
+  "muscles": [
+    "abs",
+    "obliques",
+    "lower back"
+  ],
+  "img": "https://v2.exercisedb.io/image/XQ-IJryy58NHCz"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fedc"
+  },
+  "id": "0097",
+  "name": "barbell side split squat v. 2",
+  "equipment": "barbell",
+  "muscles": [
+    "quads",
+    "glutes",
+    "hamstrings",
+    "calves"
+  ],
+  "img": "https://v2.exercisedb.io/image/b4ymjAbHyRCNXD"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fedd"
+  },
+  "id": "0098",
+  "name": "barbell side split squat",
+  "equipment": "barbell",
+  "muscles": [
+    "quads",
+    "glutes",
+    "hamstrings",
+    "calves"
+  ],
+  "img": "https://v2.exercisedb.io/image/VsWnbCsL8rjoth"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fede"
+  },
+  "id": "0099",
+  "name": "barbell single leg split squat",
+  "equipment": "barbell",
+  "muscles": [
+    "quads",
+    "glutes",
+    "hamstrings",
+    "calves"
+  ],
+  "img": "https://v2.exercisedb.io/image/ajL6JPbANJ-XvY"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fedf"
+  },
+  "id": "0100",
+  "name": "barbell skier",
+  "equipment": "barbell",
+  "muscles": [
+    "delts",
+    "triceps",
+    "core"
+  ],
+  "img": "https://v2.exercisedb.io/image/ZY5gvyZBHgKKRU"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fee0"
+  },
+  "id": "0101",
+  "name": "barbell speed squat",
+  "equipment": "barbell",
+  "muscles": [
+    "glutes",
+    "quadriceps",
+    "hamstrings",
+    "calves"
+  ],
+  "img": "https://v2.exercisedb.io/image/p8P5FgRXAwpEUb"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fee1"
+  },
+  "id": "0102",
+  "name": "barbell squat (on knees)",
+  "equipment": "barbell",
+  "muscles": [
+    "quads",
+    "glutes",
+    "hamstrings",
+    "calves"
+  ],
+  "img": "https://v2.exercisedb.io/image/CWZCFs2-XQkmGG"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fee2"
+  },
+  "id": "0103",
+  "name": "barbell standing ab rollerout",
+  "equipment": "barbell",
+  "muscles": [
+    "abs",
+    "shoulders",
+    "lower back"
+  ],
+  "img": "https://v2.exercisedb.io/image/ZRoocPmz98cPje"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fee3"
+  },
+  "id": "0104",
+  "name": "barbell standing back wrist curl",
+  "equipment": "barbell",
+  "muscles": [
+    "forearms",
+    "biceps",
+    "shoulders"
+  ],
+  "img": "https://v2.exercisedb.io/image/kkUC2OZ3aPQ0YE"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fee4"
+  },
+  "id": "0105",
+  "name": "barbell standing bradford press",
+  "equipment": "barbell",
+  "muscles": [
+    "delts",
+    "triceps",
+    "upper back"
+  ],
+  "img": "https://v2.exercisedb.io/image/YQuNNkOWLnyBLN"
+},
+{
+  "_id": {
+    "$oid": "6854ee89bcb36d547293fee5"
+  },
+  "id": "0106",
+  "name": "barbell standing close grip curl",
+  "equipment": "barbell",
+  "muscles": [
+    "biceps",
+    "forearms"
+  ],
+  "img": "https://v2.exercisedb.io/image/BdwubWVKzqqrI0"
+}]

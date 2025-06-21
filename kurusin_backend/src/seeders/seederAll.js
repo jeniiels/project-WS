@@ -3,14 +3,13 @@ require('dotenv').config();
 
 mongoose.connect(process.env.MONGO_URI).then(async () => {
     try {
-        // Seed API tiers first
-        await require('./seederApitier');
-        
-        // Then seed other collections
-        await require('./seederUser');
-        await require('./seederFood');
-        await require('./seederExercise');
-        await require('./seederWorkout');
+        require('./seederApitier');
+        require('./seederUser');
+        require('./seederFood');
+        require('./seederExercise');
+        require('./seederWorkout');
+        require('./seederFoodHistory');
+        require('./seederWorkoutHistory');
 
         console.log('\nAll seeders completed successfully!');
     } catch (err) {

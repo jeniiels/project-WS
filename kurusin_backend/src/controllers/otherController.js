@@ -2,8 +2,14 @@ const fs = require("fs");
 const getAiResponse = require("../utils/helper/getAiResponse");
 const getAiVisionResponse = require("../utils/helper/getAiVisionResponse");
 const getTodayDateString = require("../utils/helper/getTodayDateString");
-const { Exercise, FoodHistory, WorkoutHistory } = require("../models");
+const { Exercise, Workout, FoodHistory, WorkoutHistory } = require("../models");
 const { default: axios } = require("axios");
+const createWorkoutSchema = require("../utils/joi/createWorkoutSchema");
+const generateWorkoutId = require("../utils/helper/generateWorkoutId");
+const calculateHeaviestSet = require("../utils/helper/calculateHeaviestSet");
+const calculateBestVolume = require("../utils/helper/calculateBestVolume");
+const calculateDuration = require("../utils/helper/calculateDuration");
+const isSameExercises = require("../utils/helper/isSameExercises");
 
 // GET /api/diary
 const getDiary = async (req, res) => {
@@ -12,11 +18,11 @@ const getDiary = async (req, res) => {
 
     try {
         if (tanggal) {
-            const data = await FoodHistory.findOne({ username, tanggal });
+            const data = await FoodHistory.findOne({ username, tanggal }).select('-createdAt -updatedAt');
             if (!data) return res.status(404).json({ message: "Data food history tidak ditemukan." });
             return res.status(200).json(data);
         } else {
-            const data = await FoodHistory.find({ username }).sort({ tanggal: -1 });
+            const data = await FoodHistory.find({ username }).sort({ tanggal: -1 }).select('-createdAt -updatedAt');
             if (!data || data.length === 0) return res.status(404).json({ message: "Tidak ada riwayat food history untuk user ini." });
             return res.status(200).json(data);
         }
@@ -28,18 +34,14 @@ const getDiary = async (req, res) => {
 
 // POST /api/scan
 const scan = async (req, res) => {
-  // Dapatkan path file yang diunggah oleh multer
   const imagePath = req.file ? req.file.path : null;
 
   try {
-    // 1. Validasi: Pastikan file gambar telah diunggah
     if (!req.file) return res.status(400).json({ message: "File gambar tidak ditemukan. Pastikan Anda mengirimnya dengan key 'imageFile'." });
 
-    // 2. Baca file gambar dan konversi ke Base64
     const imageBase64 = fs.readFileSync(imagePath, { encoding: "base64" });
-    const mimeType = req.file.mimetype; // Dapatkan tipe MIME dari multer
+    const mimeType = req.file.mimetype;
 
-    // 3. Buat prompt yang sangat spesifik untuk AI
     const prompt = `
             Anda adalah ahli gizi dan analis makanan. Analisis gambar makanan ini dan berikan jawaban HANYA dalam format JSON yang bisa di-parse.
             Jangan gunakan markdown backticks (\`\`\`json) atau teks penjelasan lain di luar JSON.
@@ -62,7 +64,7 @@ const scan = async (req, res) => {
             }
         `;
 
-    const aiResponseText = await geminiService.getAiVisionResponse(
+    const aiResponseText = await getAiVisionResponse(
         prompt,
         imageBase64,
         mimeType
@@ -82,18 +84,183 @@ const scan = async (req, res) => {
             });
         }
 
-        res.status(200).json(foodInfo);
-    } catch (error) {
+        const tanggal = getTodayDateString();
+        const existingHistory = await FoodHistory.findOne({ username: req.user.username, tanggal });
+        if (existingHistory) {
+            existingHistory.foods.push({
+                name: foodInfo.nama_makanan,
+                nutrient_fact: foodInfo.nutrisi_prediksi,
+                image: req.file.filename, // simpan nama file gambar
+            });
+            existingHistory.summary.kalori += foodInfo.nutrisi_prediksi.kalori;
+            await existingHistory.save();
+        } else {
+            const newFoodHistory = new FoodHistory({
+                username: req.user.username,
+                tanggal,
+                foods: [{
+                    name: foodInfo.nama_makanan,
+                    nutrient_fact: foodInfo.nutrisi_prediksi,
+                    image: req.file.filename, // simpan nama file gambar
+                }],
+                summary: {
+                    kalori: foodInfo.nutrisi_prediksi.kalori,
+                    protein: foodInfo.nutrisi_prediksi.protein,
+                    karbohidrat: foodInfo.nutrisi_prediksi.karbohidrat,
+                    lemak: foodInfo.nutrisi_prediksi.lemak
+                }
+            });
+            await newFoodHistory.save();
+        }
+
+        return res.status(200).json(foodInfo);
+    } catch (err) {
         console.error(err);
         return res.status(500).json({ message: err.message });
     } finally {
-        // 7. (PENTING) Selalu hapus file sementara setelah selesai
+        // hapus file sementara setelah selesai
         if (imagePath) {
         fs.unlink(imagePath, (err) => {
             if (err)
             console.error("Gagal menghapus file sementara:", imagePath, err);
         });
         }
+    }
+};
+
+// POST /api/perform
+const perform = async (req, res) => {
+    try {
+        const { username, time, duration } = req.body;
+        const workoutData = { exercises: req.body.exercises };
+        let id_workout = "";
+        let kalori = 0;
+
+        const idList = workoutData.exercises.map(e => e.id_exercise);
+        const exerciseDetails = await Exercise.find({ id: { $in: idList } }).lean();
+        const fullData = {
+            username,
+            time,
+            duration,
+            exercises: workoutData.exercises.map(ex => {
+                const detail = exerciseDetails.find(d => d.id === ex.id_exercise);
+                return {
+                    id_exercise: ex.id_exercise,
+                    name: detail?.name || "Unknown",
+                    equipment: detail?.equipment || "Unknown",
+                    muscles: detail?.muscles || [],
+                    sets: ex.sets
+                };
+            })
+        };
+
+        const prompt = `
+            Anda adalah seorang ahli fisiologi olahraga dan pakar kebugaran.
+            Tugas Anda adalah menghitung estimasi total kalori yang terbakar dari data sesi latihan berikut.
+
+            Data Sesi Latihan:
+            ${JSON.stringify(fullData, null, 2)}
+
+            Analisis semua informasi yang diberikan: durasi total, jenis latihan, target otot, dan detail setiap set (beban dan repetisi).
+            
+            INSTRUKSI PENTING UNTUK OUTPUT:
+            Balasan Anda HARUS HANYA berupa satu angka integer saja.
+            - JANGAN sertakan teks penjelasan apa pun.
+            - JANGAN sertakan satuan seperti "kalori" atau "kcal".
+            - JANGAN format sebagai JSON.
+            - Cukup angka estimasi kalori yang terbakar.
+
+            Contoh balasan yang valid: 412
+            Contoh balasan yang TIDAK valid: "Sekitar 412 kalori."
+        `;
+
+        const aiResponseText = await getAiResponse(prompt);
+        kalori = parseInt(aiResponseText.trim(), 10);
+        // kalori = 0;
+        if (isNaN(kalori)) {
+            console.error("Respons dari AI bukan angka yang valid. Respons mentah:", aiResponseText);
+            return res.status(500).json({ 
+                message: "Gagal memproses respons dari AI karena format tidak sesuai.",
+                rawResponse: aiResponseText 
+            });
+        }
+
+        const possibleWorkouts = await Workout.find({
+            "exercises.id_exercise": { $in: workoutData.exercises.map(e => e.id_exercise) }
+        }).lean();
+
+        let matchedWorkout = null;
+        for (const workout of possibleWorkouts) {
+            if (isSameExercises(workout.exercises, workoutData.exercises)) {
+                matchedWorkout = workout;
+                break;
+            }
+        }
+
+        if (!matchedWorkout) {
+            try {
+                await createWorkoutSchema.validateAsync(workoutData);
+            } catch (error) {
+                return res.status(400).json({ message: error.details[0].message });
+            }
+    
+            const id = await generateWorkoutId();
+            const calculatedWorkout = workoutData.exercises.map((exercise) => {
+                const heaviestSet = calculateHeaviestSet(exercise.sets);
+                const bestVolume = calculateBestVolume(exercise.sets);
+                // console.log(`Heaviest Set: ${heaviestSet}, Best Volume: ${bestVolume}`);
+                return {
+                    id_exercise: exercise.id_exercise,
+                    sets: exercise.sets,
+                    heaviest_weight: heaviestSet,
+                    best_set_volume: bestVolume,
+                };
+            });
+            workoutData.exercises = calculatedWorkout;
+            const newWorkout = new Workout({ ...workoutData, id, kalori_total: kalori });
+            const savedWorkout = await newWorkout.save();
+            id_workout = savedWorkout.id;
+            if (!savedWorkout) return res.status(500).json({ message: "Gagal menyimpan workout." }); 
+        }
+        else {
+            id_workout = matchedWorkout.id; 
+        }
+        
+        // cari workout history berdasarkan username dan tanggal hari ini
+        const todayDate = getTodayDateString();
+        const existingHistory = await WorkoutHistory.findOne({ username, tanggal: todayDate });
+
+        if (existingHistory) {
+            existingHistory.workouts.push({
+                id_workout,
+                time,
+                duration_total: duration,
+            });
+            existingHistory.summary.duration = calculateDuration(existingHistory.summary.duration, duration);
+            existingHistory.summary.kalori += kalori;
+            await existingHistory.save();
+        } else {
+            // jika belum ada, buat history baru
+            const workoutHistory = new WorkoutHistory({
+                username,
+                tanggal: todayDate,
+                workouts: [{
+                    id_workout,
+                    time,
+                    duration_total: duration,
+                }],
+                summary: {
+                    duration,
+                    kalori
+                },
+            });
+            await workoutHistory.save();
+        }
+        
+        return res.status(201).json({ message: "Workout history berhasil disimpan." });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
     }
 };
 
@@ -226,6 +393,7 @@ const calculateCalory = async (req, res) => {
 module.exports = {
   getDiary,
   scan,
+  perform,
   fetchExercise,
   fetchRecommendation,
   calculateCalory,

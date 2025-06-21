@@ -2,7 +2,7 @@ const axios = require('axios');
 
 const getAiResponse = async (prompt) => {
     const apiKey = process.env.GOOGLE_APIKEY;
-    const model = 'gemini-pro';
+    const model = 'gemini-2.5-flash';
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
     if (!apiKey) {

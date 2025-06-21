@@ -1,5 +1,5 @@
 const { default:axios } = require("axios");
-const { User, Exercise } = require("../models");
+const { Exercise, Workout } = require("../models");
 const createExerciseSchema = require("../utils/joi/createExerciseSchema");
 const WorkoutHistory = require("../models/WorkoutHistory");
 require("dotenv").config();
@@ -54,6 +54,48 @@ const getOne = async (req, res) => {
             best_set_volume
         }
         return res.status(200).json(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
+    }
+};
+
+// GET /api/exercises/:id_exercise/:username
+const getOneWithHistory = async (req, res) => {
+    try {
+        const { id_exercise, username } = req.params;
+
+        const histories = await WorkoutHistory.find({ username })
+            .sort({ tanggal: -1 })
+            .lean();
+
+        for (const history of histories) {
+            for (let i = history.workouts.length - 1; i >= 0; i--) {
+                const workoutEntry = history.workouts[i];
+                const workout = await Workout.findOne({ id: workoutEntry.id_workout }).lean();
+                if (!workout) continue;
+                console.log(workout.id);
+
+                const exerciseData = workout.exercises.find(e => e.id_exercise === id_exercise);
+                if (exerciseData) {
+                    const exerciseInfo = await Exercise.findOne({ id: id_exercise }).lean();
+
+                    if (!exerciseInfo) {
+                        return res.status(404).json({ message: "Exercise tidak ditemukan di database." });
+                    }
+
+                    return res.status(200).json({
+                        id: id_exercise,
+                        name: exerciseInfo.name,
+                        img: exerciseInfo.img,
+                        heaviest_weight: exerciseData.heaviest_weight,
+                        best_set_volume: exerciseData.best_set_volume,
+                        previous: exerciseData.sets
+                    });
+                }
+            }
+        }
+        return res.status(404).json({ message: "Belum ada history untuk exercise ini." });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: err.message });
@@ -117,6 +159,7 @@ const remove = async (req, res) => {
 module.exports = { 
     getAll,
     getOne,
+    getOneWithHistory,
     create,
     update,
     remove,

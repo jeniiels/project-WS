@@ -1,8 +1,9 @@
 const express = require('express');
-const { getAll, getOne, create, update, remove } = require('../controllers/exerciseController');
+const { getAll, getOne, getOneWithHistory, create, update, remove } = require('../controllers/exerciseController');
 const router = express.Router();
 
 router.get('/', getAll);
+router.get('/:id_exercise/:username', getOneWithHistory); 
 router.get('/:id_exercise', getOne);
 router.post('/', create);
 router.put('/:id', update);

@@ -1,9 +1,10 @@
 const multer = require("multer");
 const path = require("path");
+const storageScan = require("./storageScan");
 
 const uploadScan = multer({
-    storage: storageSingle,
-    limits: { fileSize: 20000 },
+    storage: storageScan,
+    limits: { fileSize: 200000 },
     fileFilter: (req, file, callback) => {
         const allowedFileType = /jpeg|jpg|png|gif/
         const fileExtension = path.extname(file.originalname).toLowerCase()

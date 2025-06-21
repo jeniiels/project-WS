@@ -17,4 +17,8 @@ router.delete('/:username', checkApiKey, checkRoles("admin"), remove);
 router.post('/login', login);
 router.post('/register', register);
 
+router.get('/mdp/:username', getOne);
+router.post('/mdp/login', login);
+router.post('/mdp/register', register);
+
 module.exports = router;

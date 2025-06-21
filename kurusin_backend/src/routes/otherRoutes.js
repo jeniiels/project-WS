@@ -23,4 +23,10 @@ router.get('/fetch', fetchExercise);
 router.get('/recommendation', checkApiKey, updateApiLog, fetchRecommendation);
 router.get('/calory', calculateCalory);
 
+router.get('/mdp/recommendation', fetchRecommendation);
+router.get('/mdp/calory', calculateCalory);
+router.get('/mdp/diary/:username', getDiary);
+router.post('/mdp/scan', uploadScan.single('imageFile'), scan);
+router.post('/mdp/perform', perform);
+
 module.exports = router;

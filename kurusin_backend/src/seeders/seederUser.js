@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { faker } = require('@faker-js/faker');
+const bcryptjs = require("bcryptjs");
 const { User } = require('../models');
 require('dotenv').config();
 
@@ -21,7 +22,7 @@ mongoose.connect(process.env.MONGO_URI).then(async () => {
             username: faker.internet.username(),
             name: faker.person.fullName(),
             email: faker.internet.email(),
-            password: faker.internet.password(),
+            password: await bcryptjs.hash('123',10),
             role: faker.helpers.arrayElement(roles),
             saldo: faker.number.int({ min: 0, max: 100000 }),
             subscription,

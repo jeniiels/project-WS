@@ -4,12 +4,14 @@ const getAiVisionResponse = require("../utils/helper/getAiVisionResponse");
 const getTodayDateString = require("../utils/helper/getTodayDateString");
 const { Exercise, Workout, FoodHistory, WorkoutHistory } = require("../models");
 const { default: axios } = require("axios");
+const moment = require('moment');
 const createWorkoutSchema = require("../utils/joi/createWorkoutSchema");
 const generateWorkoutId = require("../utils/helper/generateWorkoutId");
 const calculateHeaviestSet = require("../utils/helper/calculateHeaviestSet");
 const calculateBestVolume = require("../utils/helper/calculateBestVolume");
 const calculateDuration = require("../utils/helper/calculateDuration");
 const isSameExercises = require("../utils/helper/isSameExercises");
+const parseSet = require("../utils/helper/parseSet");
 
 // GET /api/diary
 const getDiary = async (req, res) => {
@@ -305,6 +307,37 @@ const fetchExercise = async (req, res) => {
     }
 };
 
+// GET /api/motivation
+const getDailyMotivation = async (req, res) => {
+    try {
+        const languages = ['Indonesia', 'English'];
+        const selectedLanguage = languages[Math.floor(Math.random() * languages.length)];
+
+        const prompt = `
+            Anda adalah seorang motivator kebugaran dan kesehatan yang positif dan menginspirasi.
+            
+            Tugas Anda: Buat sebuah kutipan motivasi singkat.
+
+            Aturan Ketat:
+            - Kutipan harus dalam Bahasa ${selectedLanguage}.
+            - Kutipan harus berhubungan dengan motivasi untuk hidup sehat, diet, atau olahraga.
+            - Kutipan HARUS terdiri dari SATU kalimat saja, jangan terlalu panjang.
+            - JANGAN gunakan tanda kutip (") di awal atau akhir jawaban.
+            - JANGAN tambahkan teks penjelasan apa pun.
+
+            Contoh jawaban yang benar (jika bahasa Inggris): Your future self will thank you for today's workout.
+            Contoh jawaban yang benar (jika bahasa Indonesia): Setiap langkah kecil menuju gym adalah kemenangan besar bagi kesehatanmu.
+        `;
+
+        const motivationQuote = await getAiResponse(prompt);
+        const cleanQuote = motivationQuote.replace(/"/g, '').trim();
+        res.status(200).json({ motivation: cleanQuote });
+    } catch (error) {
+        console.error(err);
+        return res.status(500).json({ message: err.message });
+    }
+};
+
 // GET /api/recommendation
 const fetchRecommendation = async (req, res) => {
     try {
@@ -359,38 +392,34 @@ const fetchRecommendation = async (req, res) => {
     }
 };
 
-const calculateCalory = async (req, res) => {
+const calculateCalorie = async (req, res) => {
     try {
         const tanggal = getTodayDateString();
-        const id_user = req.user.username || req.user.id_user;
-
-        const todayFood = await FoodHistory.findOne({ id_user, tanggal });
-
-        const kaloriMasuk = todayFood?.summary?.kalori || 0;
-
-        const startOfDay = new Date();
-        startOfDay.setHours(0, 0, 0, 0);
-
-        const endOfDay = new Date();
-        endOfDay.setHours(23, 59, 59, 999);
-
-        const workouts = await WorkoutHistory.find({
-            id_user,
-            timestamp: {
-                $gte: startOfDay,
-                $lte: endOfDay,
-            },
+        const username = req.params;
+        const todayFood = await FoodHistory.findOne({
+            username: username.username,
+            tanggal,
         });
 
-        // Total kalori keluar (misalnya best_set_volume * 0.1 sebagai faktor pembakar kalori)
-        const kaloriKeluar = workouts.reduce((total, w) => {
-            return total + (w.best_set_volume || 0) * 0.1;
-        }, 0);
+        const todayWorkout = await WorkoutHistory.findOne({
+            username: username.username,
+            tanggal,
+        });
+
+        let totalcalorie = 0, calorieIn = 0, calorieOut = 0;
+        if (todayFood) calorieIn = todayFood.summary.kalori || 0;
+        if (todayWorkout) calorieOut = todayWorkout.summary.kalori || 0;
+        totalcalorie = calorieIn - calorieOut;
+
+        let status = "neutral";
+        if (totalcalorie > 0) status = "surplus";
+        else if (totalcalorie < 0) status = "deficit";
 
         return res.status(200).json({
-            tanggal,
-            kaloriMasuk,
-            kaloriKeluar: Math.round(kaloriKeluar),
+            total_calorie: totalcalorie,
+            calorie_in: calorieIn,
+            calorie_out: calorieOut,
+            status
         });
     } catch (err) {
         console.error(err);
@@ -398,11 +427,53 @@ const calculateCalory = async (req, res) => {
     }
 };
 
+const getLastWorkout = async (req, res) => {
+    try {
+        const { username } = req.params;
+
+        const lastHistory = await WorkoutHistory.findOne({ username }).sort({ tanggal: -1 });
+        if (!lastHistory) return res.status(404).json({ message: "Tidak ada riwayat workout untuk user ini." });
+        let lastWorkout = lastHistory.workouts[lastHistory.workouts.length - 1];
+
+        const workoutData = await Workout.findOne({ id: lastWorkout.id_workout }).lean();
+        if (!workoutData) return res.status(404).json({ message: "Workout tidak ditemukan." });
+
+        const timeFormatted = moment(workoutData.time).format('dddd, MMM D, YYYY - h:mma');
+
+        const exercises = await Promise.all(workoutData.exercises.map(async (ex) => {
+            const sets = ex.sets;
+            const heaviest_weight = calculateHeaviestSet(sets);
+            const best_set_volume = calculateBestVolume(sets);
+            const exerciseInfo = await Exercise.findOne({ id: ex.id_exercise }).select('name').lean();
+            const name = exerciseInfo?.name || '(unknown)';
+        
+            return {
+                name,
+                sets,
+                heaviest_weight,
+                best_set_volume
+            };
+        }));
+
+        return res.status(200).json({
+            time: timeFormatted,
+            duration_total: workoutData.duration,
+            kalori_total: workoutData.kalori_total || 0,
+            exercises
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
+    }
+};
+
 module.exports = {
-  getDiary,
-  scan,
-  perform,
-  fetchExercise,
-  fetchRecommendation,
-  calculateCalory,
+    getDiary,
+    scan,
+    perform,
+    fetchExercise,
+    getDailyMotivation,
+    fetchRecommendation,
+    calculateCalorie,
+    getLastWorkout,
 };

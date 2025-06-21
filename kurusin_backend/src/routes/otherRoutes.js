@@ -1,7 +1,7 @@
 const express = require('express');
 const { login, register } = require('../controllers/userController');
 const { getLogs, subscribe } = require('../controllers/apiController');
-const { getDiary, scan, perform, fetchExercise, fetchRecommendation, calculateCalory } = require('../controllers/otherController');
+const { getDiary, scan, perform, fetchExercise, getDailyMotivation, fetchRecommendation, calculateCalorie, getLastWorkout } = require('../controllers/otherController');
 const checkApiKey = require('../middlewares/checkApiKey');
 const updateApiLog = require('../middlewares/updateApiLog');
 const uploadScan = require('../utils/multer/uploadScan');
@@ -20,11 +20,15 @@ router.post('/perform', checkApiKey, updateApiLog, perform);
 
 // Public routes (no authentication required - external API fetches)
 router.get('/fetch', fetchExercise);
+router.get('/motivation', getDailyMotivation);
 router.get('/recommendation', checkApiKey, updateApiLog, fetchRecommendation);
-router.get('/calory', calculateCalory);
+router.get('/calorie', calculateCalorie);
+router.get('/lastworkout/:username', getLastWorkout);
 
+router.get('/mdp/motivation', getDailyMotivation);
 router.get('/mdp/recommendation', fetchRecommendation);
-router.get('/mdp/calory', calculateCalory);
+router.get('/mdp/calorie', calculateCalorie);
+router.get('/mdp/lastworkout/:username', getLastWorkout);
 router.get('/mdp/diary/:username', getDiary);
 router.post('/mdp/scan', uploadScan.single('imageFile'), scan);
 router.post('/mdp/perform', perform);

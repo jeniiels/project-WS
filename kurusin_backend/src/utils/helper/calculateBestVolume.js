@@ -4,7 +4,6 @@ const calculateBestVolume = (sets) => {
     let maxVolume = 0;
     sets.forEach(str => {
         const parsed = parseSet(str);
-        console.log(parsed);
         if (parsed && parsed.volume > maxVolume) {
             maxVolume = parsed.volume;
         }

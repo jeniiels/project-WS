@@ -87,21 +87,29 @@ const scan = async (req, res) => {
         const tanggal = getTodayDateString();
         const existingHistory = await FoodHistory.findOne({ username: req.user.username, tanggal });
         if (existingHistory) {
+            const id = existingHistory.foods.length > 0 ? existingHistory.foods[existingHistory.foods.length - 1].id + 1 : 1;
             existingHistory.foods.push({
+                id,
                 name: foodInfo.nama_makanan,
-                nutrient_fact: foodInfo.nutrisi_prediksi,
-                image: req.file.filename, // simpan nama file gambar
+                jumlah: 1,
+                tipe_sajian: "g",
+                kalori_total: foodInfo.nutrisi_prediksi.kalori,
             });
             existingHistory.summary.kalori += foodInfo.nutrisi_prediksi.kalori;
+            existingHistory.summary.protein += foodInfo.nutrisi_prediksi.protein;
+            existingHistory.summary.karbohidrat += foodInfo.nutrisi_prediksi.karbohidrat;
+            existingHistory.summary.lemak += foodInfo.nutrisi_prediksi.lemak;
             await existingHistory.save();
         } else {
             const newFoodHistory = new FoodHistory({
                 username: req.user.username,
                 tanggal,
                 foods: [{
+                    id: 1,
                     name: foodInfo.nama_makanan,
-                    nutrient_fact: foodInfo.nutrisi_prediksi,
-                    image: req.file.filename, // simpan nama file gambar
+                    jumlah: 1,
+                    tipe_sajian: "g",
+                    kalori_total: foodInfo.nutrisi_prediksi.kalori
                 }],
                 summary: {
                     kalori: foodInfo.nutrisi_prediksi.kalori,

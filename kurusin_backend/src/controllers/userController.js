@@ -169,7 +169,7 @@ const login = async (req, res) => {
         { expiresIn: process.env.JWT_EXPIRATION || "1h" }
     );
     
-    return res.status(200).json({ status: "Login successful!", token, user });
+    return res.status(200).json(user);
 };
 
 // POST /api/users/register

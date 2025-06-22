@@ -345,7 +345,7 @@ const fetchRecommendation = async (req, res) => {
     try {
         const tanggal = getTodayDateString();
         const todayHistory = await FoodHistory.findOne({
-            username: req.user.username,
+            username: req.params.username,
             tanggal,
         });
 

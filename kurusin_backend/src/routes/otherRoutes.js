@@ -26,7 +26,7 @@ router.get('/calorie', calculateCalorie);
 router.get('/lastworkout/:username', getLastWorkout);
 
 router.get('/mdp/motivation', getDailyMotivation);
-router.get('/mdp/recommendation', fetchRecommendation);
+router.get('/mdp/recommendation/:username', fetchRecommendation);
 router.get('/mdp/calorie', calculateCalorie);
 router.get('/mdp/lastworkout/:username', getLastWorkout);
 router.get('/mdp/diary/:username', getDiary);

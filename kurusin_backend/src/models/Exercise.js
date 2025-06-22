@@ -20,7 +20,10 @@ const exerciseSchema = new Schema({
     }],
     img: { 
         type: String 
-    }
+    },
+    instructions: [{ 
+        type: String, required: true 
+    }],
 }, {
     timestamps: false,
     versionKey: false

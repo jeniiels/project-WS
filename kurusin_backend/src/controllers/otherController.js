@@ -297,8 +297,10 @@ const fetchExercise = async (req, res) => {
             equipment: exercise.equipment,
             muscles: [exercise.target, ...(exercise.secondaryMuscles || [])],
             img: exercise.gifUrl || "",
+            instructions: exercise.instructions
         }));
 
+        await Exercise.deleteMany();
         await Exercise.insertMany(result);
         return res.status(200).json(result);
     } catch (err) {

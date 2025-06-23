@@ -4,6 +4,7 @@ const { User } = require("../models");
 const createUserSchema = require("../utils/joi/createUserSchema");
 const getApiQuotaForTier = require("../utils/helper/getApiQuotaforTier");
 const {FoodHistory, WorkoutHistory} = require("../models");
+const Workout = require("../models/Workout");
 
 // GET /api/users
 const getAll = async (req, res) => {
@@ -18,6 +19,49 @@ const getAll = async (req, res) => {
     }
 };
 
+// const getOne = async (req, res) => {
+//     try {
+//         const { username } = req.params;
+
+//         const user = await User.findOne({ username })
+//             .select('username email createdAt');
+
+//         if (!user) return res.status(404).json({ message: "User not found!" });
+
+//         const workoutHistories = await WorkoutHistory.find({ username }).lean();
+//         const workoutHistoryFormatted = workoutHistories.map(w => ({
+//             type: 'workout',
+//             timestamp: w.timestamp,
+//             ...w
+//         }));
+
+//         const foodHistories = await FoodHistory.find({ username }).lean();
+//         const foodHistoryFormatted = foodHistories.map(f => ({
+//             type: 'food',
+//             timestamp: new Date(f.createdAt),
+//             ...f
+//         }));
+
+//         const fullHistory = [...workoutHistoryFormatted, ...foodHistoryFormatted]
+//             .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+//         return res.status(200).json({
+//             status: "success",
+//             data: {
+//                 id: user._id,
+//                 username: user.username,
+//                 email: user.email,
+//                 createdAt: user.createdAt,
+//                 history: fullHistory
+//             }
+//         });
+
+//     } catch (err) {
+//         console.error(err);
+//         return res.status(500).json({ message: err.message });
+//     }
+// };
+
 const getOne = async (req, res) => {
     try {
         const { username } = req.params;
@@ -28,33 +72,23 @@ const getOne = async (req, res) => {
         if (!user) return res.status(404).json({ message: "User not found!" });
 
         const workoutHistories = await WorkoutHistory.find({ username }).lean();
-        const workoutHistoryFormatted = workoutHistories.map(w => ({
-            type: 'workout',
-            timestamp: w.timestamp,
-            ...w
-        }));
+        const allWorkouts = [];
 
-        const foodHistories = await FoodHistory.find({ username }).lean();
-        const foodHistoryFormatted = foodHistories.map(f => ({
-            type: 'food',
-            timestamp: new Date(f.createdAt),
-            ...f
-        }));
+        for (const history of workoutHistories) {
+            for (const workout of history.workouts) {
+                const workoutDetail = await Workout.findOne({ id: workout.id_workout }).lean();
 
-        const fullHistory = [...workoutHistoryFormatted, ...foodHistoryFormatted]
-            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-        return res.status(200).json({
-            status: "success",
-            data: {
-                id: user._id,
-                username: user.username,
-                email: user.email,
-                createdAt: user.createdAt,
-                history: fullHistory
+                allWorkouts.push({
+                    id_workout: workout.id_workout,
+                    time: workout.time,
+                    duration_total: workout.duration_total,
+                    kalori_total: workoutDetail ? workoutDetail.kalori_total : 0
+                });
             }
-        });
+        }
 
+        return res.status(200).json(allWorkouts);
+        // return res.status(200).json(workoutHistories);
     } catch (err) {
         console.error(err);
         return res.status(500).json({ message: err.message });

@@ -434,7 +434,12 @@ const getLastWorkout = async (req, res) => {
         const { username } = req.params;
 
         const lastHistory = await WorkoutHistory.findOne({ username }).sort({ tanggal: -1 });
-        if (!lastHistory) return res.status(404).json({ message: "Tidak ada riwayat workout untuk user ini." });
+        if (!lastHistory) return res.status(200).json({ 
+            time:  "",
+            duration_total: "",
+            kalori_total: 0,
+            exercises: [],
+        });
         let lastWorkout = lastHistory.workouts[lastHistory.workouts.length - 1];
 
         const workoutData = await Workout.findOne({ id: lastWorkout.id_workout }).lean();

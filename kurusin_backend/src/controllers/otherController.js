@@ -21,7 +21,18 @@ const getDiary = async (req, res) => {
     try {
         if (tanggal) {
             const data = await FoodHistory.findOne({ username, tanggal }).select('-createdAt -updatedAt');
-            if (!data) return res.status(404).json({ message: "Data food history tidak ditemukan." });
+            if (!data) return res.status(404).json({
+                _id: "",
+                username: "",
+                tanggal: "",
+                foods: [],
+                summary: {
+                    kalori: 0,
+                    protein: 0,
+                    lemak: 0,
+                    karbohidrat: 0
+                }
+            });
             return res.status(200).json(data);
         } else {
             const data = await FoodHistory.find({ username }).sort({ tanggal: -1 }).select('-createdAt -updatedAt');

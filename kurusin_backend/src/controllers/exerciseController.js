@@ -88,6 +88,9 @@ const getOneWithHistory = async (req, res) => {
                         id: id_exercise,
                         name: exerciseInfo.name,
                         img: exerciseInfo.img,
+                        equipment: exerciseInfo.equipment,
+                        muscles: exerciseInfo.muscles,
+                        steps: exerciseInfo.instructions || [],
                         heaviest_weight: exerciseData.heaviest_weight,
                         best_set_volume: exerciseData.best_set_volume,
                         previous: exerciseData.sets

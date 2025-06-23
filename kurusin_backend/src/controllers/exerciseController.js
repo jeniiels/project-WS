@@ -68,6 +68,8 @@ const getOneWithHistory = async (req, res) => {
         const histories = await WorkoutHistory.find({ username })
             .sort({ tanggal: -1 })
             .lean();
+        
+
 
         for (const history of histories) {
             for (let i = history.workouts.length - 1; i >= 0; i--) {
@@ -98,7 +100,24 @@ const getOneWithHistory = async (req, res) => {
                 }
             }
         }
-        return res.status(404).json({ message: "Belum ada history untuk exercise ini." });
+        // return res.status(404).json({ message: "Belum ada history untuk exercise ini." });
+        const exerciseInfo = await Exercise.findOne({ id: id_exercise }).lean();
+
+        if (!exerciseInfo) {
+            return res.status(404).json({ message: "Exercise tidak ditemukan di database." });
+        }
+
+        return res.status(200).json({
+            id: id_exercise,
+            name: exerciseInfo.name,
+            img: exerciseInfo.img,
+            equipment: exerciseInfo.equipment,
+            muscles: exerciseInfo.muscles,
+            steps: exerciseInfo.instructions || [],
+            heaviest_weight: 0,
+            best_set_volume: 0,
+            previous: []
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: err.message });

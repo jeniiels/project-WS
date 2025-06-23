@@ -1,51 +1,71 @@
 const mongoose = require('mongoose');
+const { faker } = require('@faker-js/faker');
 require('dotenv').config();
+const moment = require('moment');
 
-const Workout = require('../models/Workout');
-const WorkoutHistory = require('../models/WorkoutHistory');
-
-const parseSet = (setStr) => {
-    const match = setStr.match(/(\d+)\s*reps\s*x\s*(\d+)\s*kg/i);
-    if (!match) return null;
-    const reps = parseInt(match[1]);
-    const weight = parseInt(match[2]);
-    return { reps, weight, volume: reps * weight };
-};
-
-const buildExerciseResult = (exercise) => {
-    const parsedSets = exercise.sets.map(parseSet).filter(Boolean);
-    if (parsedSets.length === 0) return {
-        id_exercise: exercise.id_exercise,
-        heaviest_weight: "0kg",
-        best_set_volume: "0kg x 0"
-    };
-
-    const heaviest = parsedSets.reduce((a, b) => a.weight > b.weight ? a : b);
-    const bestVolume = parsedSets.reduce((a, b) => a.volume > b.volume ? a : b);
-
-    return {
-        id_exercise: exercise.id_exercise,
-        heaviest_weight: `${heaviest.weight}kg`,
-        best_set_volume: `${bestVolume.weight}kg x ${bestVolume.reps}`
-    };
-};
+const {User, Workout, WorkoutHistory} = require('../models');
 
 mongoose.connect(process.env.MONGO_URI).then(async () => {
     const workouts = await Workout.find({});
+    const users = await User.find({}).select('username -_id');
     await WorkoutHistory.deleteMany({});
 
-    const histories = workouts.map(w => {
-        return new WorkoutHistory({
-            username: w.username,
+    const usernames = users.map(u => u.username);
+
+    if (usernames.length === 0) {
+        console.error("Tidak ada user ditemukan di collection User.");
+        process.exit(1);
+    }
+
+    const grouped = {};
+
+    for (const w of workouts) {
+        const username = faker.helpers.arrayElement(usernames);
+        const tanggal = faker.date.between({ from: '2024-01-01', to: '2024-12-31' }).toISOString().slice(0, 10);
+        const key = `${username}_${tanggal}`;
+        const randomDate = faker.date.between({ from: '2025-01-01', to: '2025-12-31' });
+        const time = moment(randomDate).format('dddd, MMM D, YYYY - h:mma');
+
+        if (!grouped[key]) {
+            grouped[key] = {
+                username,
+                tanggal,
+                workouts: [],
+                summary: {
+                    duration: 0,
+                    kalori: 0,
+                }
+            };
+        }
+
+        const hours = faker.number.int({ min: 0, max: 2 });
+        const minutes = faker.number.int({ min: 1, max: 59 });
+        const durationStr = `${hours}h ${minutes}min`;
+
+        grouped[key].workouts.push({
             id_workout: w.id,
-            tanggal: new Date(w.time).toISOString().slice(0, 10),
-            duration: w.duration,
-            exercises: w.exercises.map(buildExerciseResult)
+            time,
+            duration_total: durationStr
         });
-    });
+
+        const totalMinutes = hours * 60 + minutes;
+        grouped[key].summary.duration += totalMinutes;
+
+        grouped[key].summary.kalori += w.kalori_total || 0;
+    }
+
+    const histories = Object.values(grouped).map(h => ({
+        username: h.username,
+        tanggal: h.tanggal,
+        workouts: h.workouts,
+        summary: {
+            duration: `${h.summary.duration} menit`,
+            kalori: h.summary.kalori
+        }
+    }));
 
     await WorkoutHistory.insertMany(histories);
-    console.log("WorkoutHistory seeded!");
+    console.log("Dummy workouthistories seeded!");
     process.exit(0);
 }).catch(err => {
     console.error(err);

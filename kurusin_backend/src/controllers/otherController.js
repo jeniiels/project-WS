@@ -445,8 +445,6 @@ const getLastWorkout = async (req, res) => {
         const workoutData = await Workout.findOne({ id: lastWorkout.id_workout }).lean();
         if (!workoutData) return res.status(404).json({ message: "Workout tidak ditemukan." });
 
-        const timeFormatted = moment(workoutData.time).format('dddd, MMM D, YYYY - h:mma');
-
         const exercises = await Promise.all(workoutData.exercises.map(async (ex) => {
             const sets = ex.sets;
             const heaviest_weight = calculateHeaviestSet(sets);
@@ -463,8 +461,8 @@ const getLastWorkout = async (req, res) => {
         }));
 
         return res.status(200).json({
-            time: timeFormatted,
-            duration_total: workoutData.duration,
+            time: lastWorkout.time,
+            duration_total: lastWorkout.duration_total,
             kalori_total: workoutData.kalori_total || 0,
             exercises
         });

@@ -1,12 +1,10 @@
 const mongoose = require('mongoose');
 const { faker } = require('@faker-js/faker');
-const FoodHistory = require('../models/FoodHistory');
+const {User, FoodHistory} = require('../models');
 const foodsRaw = require('../data/db_kurusin.foods.json');
 
 require('dotenv').config();
 faker.seed(50);
-
-const N_USERS = ['jeniels', 'Danny.Hyatt', 'Terrence.Reinger', 'Gretchen_MacGyver'];
 
 const getRandomFoods = (count = 3) => {
     const selected = faker.helpers.arrayElements(foodsRaw, count);
@@ -39,11 +37,13 @@ const summarize = (foods) => {
 
 mongoose.connect(process.env.MONGO_URI).then(async () => {
     await FoodHistory.deleteMany();
+    const users = await User.find({}).select('username -_id');
+    const usernames = users.map(u => u.username);
 
     const data = [];
 
     for (let i = 0; i < 7; i++) {
-        const username = faker.helpers.arrayElement(N_USERS);
+        const username = faker.helpers.arrayElement(usernames);
         const tanggal = faker.date.recent({ days: 14 }).toISOString().slice(0, 10);
         const foods = getRandomFoods(faker.number.int({ min: 2, max: 4 }));
         const summary = summarize(foods);
@@ -57,7 +57,7 @@ mongoose.connect(process.env.MONGO_URI).then(async () => {
     }
 
     await FoodHistory.insertMany(data);
-    console.log('Dummy FoodHistory seeded!');
+    console.log('Dummy foodhistories seeded!');
     process.exit(0);
 }).catch(err => {
     console.error(err);

@@ -87,7 +87,7 @@ const scan = async (req, res) => {
         }
 
         const tanggal = getTodayDateString();
-        const existingHistory = await FoodHistory.findOne({ username: req.user.username, tanggal });
+        const existingHistory = await FoodHistory.findOne({ username: req.params.username, tanggal });
         if (existingHistory) {
             const id = existingHistory.foods.length > 0 ? existingHistory.foods[existingHistory.foods.length - 1].id + 1 : 1;
             existingHistory.foods.push({
@@ -104,7 +104,7 @@ const scan = async (req, res) => {
             await existingHistory.save();
         } else {
             const newFoodHistory = new FoodHistory({
-                username: req.user.username,
+                username: req.params.username,
                 tanggal,
                 foods: [{
                     id: 1,

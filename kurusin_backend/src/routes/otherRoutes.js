@@ -30,7 +30,7 @@ router.get('/mdp/recommendation/:username', fetchRecommendation);
 router.get('/mdp/calorie', calculateCalorie);
 router.get('/mdp/lastworkout/:username', getLastWorkout);
 router.get('/mdp/diary/:username', getDiary);
-router.post('/mdp/scan', uploadScan.single('imageFile'), scan);
+router.post('/mdp/scan/:username', uploadScan.single('imageFile'), scan);
 router.post('/mdp/perform', perform);
 
 module.exports = router;

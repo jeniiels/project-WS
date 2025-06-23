@@ -8,6 +8,11 @@ const apitierSchema = new Schema({
         unique: true,
         enum: ['free', 'basic', 'premium']
     },
+    price: {
+        type: Number,
+        required: true,
+        default: 0
+    },
     monthlyQuota: {
         type: Number,
         required: true

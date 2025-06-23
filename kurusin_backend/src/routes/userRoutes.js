@@ -4,20 +4,29 @@ const uploadUser = require('../utils/multer/uploadUser');
 const checkApiKey = require('../middlewares/checkApiKey');
 const checkRoles = require('../middlewares/checkRoles');
 const updateApiLog = require('../middlewares/updateApiLog');
+const updateApiHit = require('../middlewares/updateApiHit');
 const router = express.Router();
 
-router.use(updateApiLog);
+// Register endpoint - no authentication and no logging required
+router.post('/', create); // Register
 
-router.get('/', getAll);
-router.get('/:username', getOne);
-router.post('/', create);
+// Login endpoint - logged but no API hit tracking
+router.post('/login', updateApiLog, login);
+router.post('/register', updateApiLog, register);
+
+// Apply updateApiLog and updateApiHit to all other routes
+router.use(updateApiLog);
+router.use(updateApiHit);
+
+// Protected routes (require authentication)
+router.get('/', checkApiKey, getAll);
+router.get('/:username', checkApiKey, getOne);
 router.post('/upload', checkApiKey, uploadUser.single("profile"), pp);
 router.put('/:username', checkApiKey, checkRoles("admin"), update);
 router.delete('/:username', checkApiKey, checkRoles("admin"), remove);
-router.post('/login', login);
-router.post('/register', register);
 
-router.get('/mdp/:username', getOne);
+// MDP routes 
+router.get('/mdp/:username', checkApiKey, getOne);
 router.post('/mdp/login', login);
 router.post('/mdp/register', register);
 

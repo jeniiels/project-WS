@@ -1,13 +1,20 @@
 const express = require('express');
 const { getAll, getOne, getOneWithHistory, create, update, remove } = require('../controllers/exerciseController');
+const checkApiKey = require('../middlewares/checkApiKey');
+const updateApiLog = require('../middlewares/updateApiLog');
+const updateApiHit = require('../middlewares/updateApiHit');
 const router = express.Router();
 
-router.get('/', getAll);
-router.get('/mdp/', getAll);
-router.get('/mdp/:id_exercise/:username', getOneWithHistory); 
-router.get('/:id_exercise', getOne);
-router.post('/', create);
-router.put('/:id', update);
-router.delete('/:id', remove)
+router.use(updateApiLog);
+router.use(updateApiHit);
+
+// All exercise routes require authentication
+router.get('/', checkApiKey, getAll);
+router.get('/mdp/', checkApiKey, getAll);
+router.get('/mdp/:id_exercise/:username', checkApiKey, getOneWithHistory); 
+router.get('/:id_exercise', checkApiKey, getOne);
+router.post('/', checkApiKey, create);
+router.put('/:id', checkApiKey, update);
+router.delete('/:id', checkApiKey, remove)
 
 module.exports = router;

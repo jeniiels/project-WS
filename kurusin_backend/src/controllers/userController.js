@@ -75,8 +75,7 @@ const create = async (req, res) => {
     if (existingUser) return res.status(400).json({ message: "Username already exists!" });
     const existingEmail = await User.findOne({ email });
     if (existingEmail) return res.status(400).json({ message: "Email already exists!" });
-    
-    const hashedPassword = await bcryptjs.hash(password, 10);
+      const hashedPassword = await bcryptjs.hash(password, 10);
     const initialApiQuota = await getApiQuotaForTier('free');
     
     const newUser = await User.create({
@@ -87,6 +86,7 @@ const create = async (req, res) => {
         role: role || 'user',
         saldo: 0,
         subscription: 'free',
+        subscriptionDate: new Date(), // Set initial subscription date
         apiQuota: initialApiQuota
     });
 
@@ -161,15 +161,13 @@ const login = async (req, res) => {
         saldo: user.saldo,
         subscription: user.subscription,
         apiQuota: user.apiQuota
-    };
-
-    const token = jwt.sign(
+    };    const token = jwt.sign(
         tokenPayload, 
         process.env.JWT_SECRET || "secretkey", 
         { expiresIn: process.env.JWT_EXPIRATION || "1h" }
     );
     
-    return res.status(200).json(user);
+    return res.status(200).json({ token });
 };
 
 // POST /api/users/register

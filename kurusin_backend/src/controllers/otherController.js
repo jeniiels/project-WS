@@ -267,7 +267,7 @@ const perform = async (req, res) => {
             await workoutHistory.save();
         }
         
-        return res.status(201).json({ message: "Workout history berhasil disimpan." });
+        return res.status(201).json(kalori);
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: err.message });

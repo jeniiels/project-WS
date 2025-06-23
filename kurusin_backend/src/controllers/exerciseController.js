@@ -27,6 +27,26 @@ const getAll = async (req, res) => {
     }
 };
 
+const getUniqueEquipment = async (req, res) => {
+    try {
+        const uniqueEquipments = await Exercise.distinct("equipment");
+        return res.status(200).json(uniqueEquipments);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
+    }
+};
+
+const getUniqueMuscles = async (req, res) => {
+    try {
+        const uniqueMuscles = await Exercise.distinct("muscles");
+        return res.status(200).json(uniqueMuscles);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
+    }
+};
+
 // GET /api/exercises/:id
 const getOne = async (req, res) => {
     const { id_exercise } = req.params;
@@ -185,4 +205,6 @@ module.exports = {
     create,
     update,
     remove,
+    getUniqueEquipment,
+    getUniqueMuscles
 }

@@ -2,7 +2,7 @@ const fs = require("fs");
 const getAiResponse = require("../utils/helper/getAiResponse");
 const getAiVisionResponse = require("../utils/helper/getAiVisionResponse");
 const getTodayDateString = require("../utils/helper/getTodayDateString");
-const { Exercise, Workout, FoodHistory, WorkoutHistory } = require("../models");
+const { Exercise, Food, Workout, FoodHistory, WorkoutHistory } = require("../models");
 const { default: axios } = require("axios");
 const moment = require('moment');
 const createWorkoutSchema = require("../utils/joi/createWorkoutSchema");
@@ -135,6 +135,91 @@ const scan = async (req, res) => {
             console.error("Gagal menghapus file sementara:", imagePath, err);
         });
         }
+    }
+};
+
+const eat = async (req, res) => {
+    try {
+        const { id, name, jumlah, tipe_sajian  } = req.body
+        const tanggal = getTodayDateString();
+        let kalori = 0;
+        
+        const food = await Food.findOne({ id });
+        if (!food) return res.status(404).json({ message: "Makanan tidak ditemukan." });
+
+        const prompt = `
+            Anda adalah ahli gizi dan analis makanan.
+            Tugas Anda adalah menghitung estimasi total kalori dari makanan berikut.
+
+            Data makanan:
+            ${JSON.stringify(food, null, 2)}
+
+            Analisis semua informasi yang diberikan: jumlah, tipe sajian, dan informasi nutrisi.
+            
+            INSTRUKSI PENTING UNTUK OUTPUT:
+            Balasan Anda HARUS HANYA berupa satu angka integer saja.
+            - JANGAN sertakan teks penjelasan apa pun.
+            - JANGAN sertakan satuan seperti "kalori" atau "kcal".
+            - JANGAN format sebagai JSON.
+            - Cukup angka estimasi kalori yang terbakar.
+
+            Contoh balasan yang valid: 412
+            Contoh balasan yang TIDAK valid: "Sekitar 412 kalori."
+        `;
+
+        const aiResponseText = await getAiResponse(prompt);
+        kalori = parseInt(aiResponseText.trim(), 10);
+        // kalori = 0;
+        if (isNaN(kalori)) {
+            console.error("Respons dari AI bukan angka yang valid. Respons mentah:", aiResponseText);
+            return res.status(500).json({ 
+                message: "Gagal memproses respons dari AI karena format tidak sesuai.",
+                rawResponse: aiResponseText 
+            });
+        }
+
+        const existingHistory = await FoodHistory.findOne({ username: req.params.username, tanggal });
+        if (existingHistory) {
+            const foodIndex = existingHistory.foods.findIndex(f => f.id === id);
+            if (foodIndex !== -1) {
+                existingHistory.foods[foodIndex].jumlah += jumlah;
+                existingHistory.foods[foodIndex].kalori_total += jumlah * (existingHistory.foods[foodIndex].kalori_total / existingHistory.foods[foodIndex].jumlah);
+            } else {
+                existingHistory.foods.push({
+                    id: 1 + existingHistory.foods.length,
+                    name,
+                    jumlah,
+                    tipe_sajian,
+                    kalori_total: kalori
+                });
+            }
+            existingHistory.summary.kalori += kalori;
+            await existingHistory.save();
+            return res.status(200).json(existingHistory);
+        } else {
+            const newFoodHistory = new FoodHistory({
+                username: req.params.username,
+                tanggal,
+                foods: [{
+                    id: 1,
+                    name,
+                    jumlah,
+                    tipe_sajian,
+                    kalori_total: kalori
+                }],
+                summary: {
+                    kalori,
+                    protein: food.nutrient_fact_100g.protein,
+                    karbohidrat: food.nutrient_fact_100g.karbohidrat_total,
+                    lemak: food.nutrient_fact_100g.lemak_total
+                }
+            });
+            await newFoodHistory.save();
+            return res.status(200).json(newFoodHistory);
+        }
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: err.message });
     }
 };
 
@@ -375,6 +460,8 @@ const fetchRecommendation = async (req, res) => {
                     "lemak": JUMLAH_LEMAK
                 }
                 }
+
+                Panjang nama_makanan MAKSIMAL 7 huruf.
             `;
 
         const aiResponseText = await getAiResponse(prompt);
@@ -475,6 +562,7 @@ const getLastWorkout = async (req, res) => {
 module.exports = {
     getDiary,
     scan,
+    eat,
     perform,
     fetchExercise,
     getDailyMotivation,

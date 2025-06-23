@@ -1,7 +1,7 @@
 const express = require('express');
 const { login, register } = require('../controllers/userController');
 const { getLogs, subscribe } = require('../controllers/apiController');
-const { getDiary, scan, perform, fetchExercise, getDailyMotivation, fetchRecommendation, calculateCalorie, getLastWorkout } = require('../controllers/otherController');
+const { getDiary, scan, eat, perform, fetchExercise, getDailyMotivation, fetchRecommendation, calculateCalorie, getLastWorkout } = require('../controllers/otherController');
 const checkApiKey = require('../middlewares/checkApiKey');
 const updateApiLog = require('../middlewares/updateApiLog');
 const uploadScan = require('../utils/multer/uploadScan');
@@ -24,6 +24,7 @@ router.get('/motivation', getDailyMotivation);
 router.get('/recommendation', checkApiKey, updateApiLog, fetchRecommendation);
 router.get('/calorie', calculateCalorie);
 router.get('/lastworkout/:username', getLastWorkout);
+router.post('/eat/:username', eat);
 
 router.get('/mdp/motivation', getDailyMotivation);
 router.get('/mdp/recommendation/:username', fetchRecommendation);
@@ -32,5 +33,6 @@ router.get('/mdp/lastworkout/:username', getLastWorkout);
 router.get('/mdp/diary/:username', getDiary);
 router.post('/mdp/scan/:username', uploadScan.single('imageFile'), scan);
 router.post('/mdp/perform', perform);
+router.post('/mdp/eat/:username', eat);
 
 module.exports = router;

@@ -112,7 +112,10 @@ const remove = async (req, res) => {
         
         if (!deletedWorkout) return res.status(404).json({ message: "Workout not found!" });
         
-        return res.status(200).json(deletedWorkout);
+        return res.status(200).json({
+            message: "Workout deleted successfully!",
+            workout: deletedWorkout
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: err.message });

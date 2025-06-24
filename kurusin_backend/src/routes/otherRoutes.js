@@ -4,6 +4,7 @@ const { getLogs, getAllLogs, subscribe, addSaldo } = require('../controllers/api
 const { getDiary, scan, perform, fetchExercise, getDailyMotivation, fetchRecommendation, calculateCalorie, getLastWorkout } = require('../controllers/otherController');
 const checkApiKey = require('../middlewares/checkApiKey');
 const checkSubscription = require('../middlewares/checkSubscription');
+const checkRoles = require('../middlewares/checkRoles');
 const updateApiLog = require('../middlewares/updateApiLog');
 const updateApiHit = require('../middlewares/updateApiHit');
 const uploadScan = require('../utils/multer/uploadScan');
@@ -19,10 +20,10 @@ router.post('/register', register);
 router.use(updateApiHit);
 
 // Protected routes (authentication required)
-router.get('/logs/:username', checkApiKey, checkSubscription('premium'), getLogs);
-router.get('/logs', checkApiKey, checkSubscription('premium'), getAllLogs);
-router.post('/subscribe', checkApiKey, subscribe); // Accessible by all tiers
-router.post('/saldo', checkApiKey, addSaldo); // Accessible by all tiers
+router.get('/logs/:username', checkApiKey, checkRoles('admin'), getLogs); // Admin only
+router.get('/logs', checkApiKey, checkRoles('admin'), getAllLogs); // Admin only
+router.post('/subscribe', checkApiKey, subscribe);
+router.post('/saldo', checkApiKey, addSaldo);
 router.get('/diary/:username', checkApiKey, checkSubscription('basic'), getDiary);
 router.post('/scan', checkApiKey, checkSubscription('premium'), uploadScan.single('imageFile'), scan);
 router.post('/perform', checkApiKey, checkSubscription('premium'), perform);

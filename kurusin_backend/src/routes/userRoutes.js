@@ -12,8 +12,8 @@ const router = express.Router();
 router.post('/', create); // Register
 
 // Login endpoint - logged but no API hit tracking
-router.post('/login', updateApiLog, login);
-router.post('/register', updateApiLog, register);
+router.post('/login', login);
+router.post('/register', register);
 
 // Apply updateApiLog and updateApiHit to all other routes
 router.use(updateApiLog);

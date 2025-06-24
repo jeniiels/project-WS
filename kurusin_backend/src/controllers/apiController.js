@@ -1,4 +1,5 @@
 const { Apilog, User, Apitier } = require("../models");
+const jwt = require("jsonwebtoken");
 const getApiQuotaForTier = require("../utils/helper/getApiQuotaforTier");
 
 // GET /api/logs/:username
@@ -64,8 +65,7 @@ const subscribe = async (req, res) => {
         const newApiQuota = await getApiQuotaForTier(tier.toLowerCase());
         
         const newSaldo = Number(currentUser.saldo) - Number(tierData.price);
-        
-        const updatedUser = await User.findOneAndUpdate(
+          const updatedUser = await User.findOneAndUpdate(
             { username },
             { 
                 subscription: tier.toLowerCase(),
@@ -75,7 +75,24 @@ const subscribe = async (req, res) => {
             },
             { new: true, runValidators: true }
         ).select('-password');
-          return res.status(200).json({
+
+        // Generate new JWT token with updated subscription info
+        const tokenPayload = {
+            username: updatedUser.username,
+            email: updatedUser.email,
+            role: updatedUser.role,
+            saldo: updatedUser.saldo,
+            subscription: updatedUser.subscription,
+            apiQuota: updatedUser.apiQuota
+        };
+
+        const newToken = jwt.sign(
+            tokenPayload, 
+            process.env.JWT_SECRET || "secretkey", 
+            { expiresIn: process.env.JWT_EXPIRATION || "1h" }
+        );
+
+        return res.status(200).json({
             success: true,
             message: `Successfully subscribed user to ${tier} tier!`,
             data: {
@@ -86,7 +103,8 @@ const subscribe = async (req, res) => {
                 apiQuota: updatedUser.apiQuota,
                 saldo: updatedUser.saldo,
                 paidAmount: tierData.price
-            }
+            },
+            token: newToken // New JWT token with updated subscription
         });
     } catch (err) {
         console.error(err);

@@ -12,6 +12,7 @@ const calculateBestVolume = require("../utils/helper/calculateBestVolume");
 const calculateDuration = require("../utils/helper/calculateDuration");
 const isSameExercises = require("../utils/helper/isSameExercises");
 const parseSet = require("../utils/helper/parseSet");
+const splitNumberAndUnit = require("../utils/helper/splitNumberAndUnit");
 
 // GET /api/diary
 const getDiary = async (req, res) => {
@@ -100,13 +101,16 @@ const scan = async (req, res) => {
 
         const tanggal = getTodayDateString();
         const existingHistory = await FoodHistory.findOne({ username: req.params.username, tanggal });
+        const parsePorsi = splitNumberAndUnit(foodInfo.nutrisi_prediksi.porsi);
+        const jumlah = parsePorsi.value;
+        const tipe_sajian = parsePorsi.unit;
         if (existingHistory) {
             const id = existingHistory.foods.length > 0 ? existingHistory.foods[existingHistory.foods.length - 1].id + 1 : 1;
             existingHistory.foods.push({
                 id,
                 name: foodInfo.nama_makanan,
-                jumlah: 1,
-                tipe_sajian: "g",
+                jumlah,
+                tipe_sajian,
                 kalori_total: foodInfo.nutrisi_prediksi.kalori,
             });
             existingHistory.summary.kalori += foodInfo.nutrisi_prediksi.kalori;
@@ -121,8 +125,8 @@ const scan = async (req, res) => {
                 foods: [{
                     id: 1,
                     name: foodInfo.nama_makanan,
-                    jumlah: 1,
-                    tipe_sajian: "g",
+                    jumlah,
+                    tipe_sajian,
                     kalori_total: foodInfo.nutrisi_prediksi.kalori
                 }],
                 summary: {
@@ -154,7 +158,7 @@ const eat = async (req, res) => {
     try {
         const { id, name, jumlah, tipe_sajian  } = req.body
         const tanggal = getTodayDateString();
-        let kalori = 0, protein = 0, karbohidrat = 0, lemak = 0;
+        let kalori = 0;
         
         const food = await Food.findOne({ id });
         if (!food) return res.status(404).json({ message: "Makanan tidak ditemukan." });

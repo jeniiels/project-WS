@@ -144,16 +144,34 @@ const getOneWithHistory = async (req, res) => {
     }
 };
 
-// GET /api/exerciseswithhistory/:username
 const getAllExercisesWithHistory = async (req, res) => {
     try {
         const { username } = req.params;
+        let { search, muscles, equipment } = req.query;
+
+        search = search === "none" ? "" : search;
+        muscles = muscles === "none" ? "" : muscles;
+        equipment = equipment === "none" ? "" : equipment;
 
         const histories = await WorkoutHistory.find({ username })
             .sort({ tanggal: -1 })
             .lean();
+        // Siapkan filter query
+        const exerciseQuery = {};
 
-        const exercises = await Exercise.find().lean();
+        if (search && search.trim() !== "") {
+            exerciseQuery.name = { $regex: search, $options: "i" };
+        }
+
+        if (muscles && muscles.trim() !== "") {
+            exerciseQuery.muscles = { $regex: muscles, $options: "i" };
+        }
+
+        if (equipment && equipment.trim() !== "") {
+            exerciseQuery.equipment = { $regex: equipment, $options: "i" };
+        }
+
+        const exercises = await Exercise.find(exerciseQuery).lean();
 
         const results = [];
 

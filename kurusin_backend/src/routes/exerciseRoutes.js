@@ -1,8 +1,9 @@
 const express = require('express');
-const { getAll, getUniqueEquipment, getUniqueMuscles, getOne, getOneWithHistory, create, update, remove } = require('../controllers/exerciseController');
+const { getAll, getAllExercisesWithHistory, getUniqueEquipment, getUniqueMuscles, getOne, getOneWithHistory, create, update, remove } = require('../controllers/exerciseController');
 const router = express.Router();
 
 router.get('/', getAll);
+router.get('/exerciseswithhistory/:username', getAllExercisesWithHistory);
 router.get('/equipment', getUniqueEquipment);
 router.get('/muscles', getUniqueMuscles);
 router.get('/mdp/', getAll);

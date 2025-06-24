@@ -134,8 +134,8 @@ const getOneWithHistory = async (req, res) => {
             equipment: exerciseInfo.equipment,
             muscles: exerciseInfo.muscles,
             steps: exerciseInfo.instructions || [],
-            heaviest_weight: 0,
-            best_set_volume: 0,
+            heaviest_weight: "",
+            best_set_volume: "",
             previous: []
         });
     } catch (err) {

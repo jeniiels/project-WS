@@ -62,7 +62,7 @@ const scan = async (req, res) => {
             Tugas Anda:
             1. Identifikasi nama makanan utama dalam gambar.
             2. Berikan "confidence" score (antara 0.0 hingga 1.0) tentang seberapa yakin Anda dengan identifikasi tersebut.
-            3. Prediksikan informasi nutrisi (kalori, protein, karbohidrat, lemak) untuk satu porsi standar makanan tersebut.
+            3. Prediksikan informasi nutrisi (kalori, protein, karbohidrat, lemak, porsi) untuk satu porsi standar makanan tersebut.
 
             Struktur JSON harus persis seperti ini:
             {
@@ -72,7 +72,8 @@ const scan = async (req, res) => {
                 "kalori": 350,
                 "protein": 8,
                 "karbohidrat": 50,
-                "lemak": 10
+                "lemak": 10,
+                "porsi": "200g"
               }
             }
         `;
@@ -153,7 +154,7 @@ const eat = async (req, res) => {
     try {
         const { id, name, jumlah, tipe_sajian  } = req.body
         const tanggal = getTodayDateString();
-        let kalori = 0;
+        let kalori = 0, protein = 0, karbohidrat = 0, lemak = 0;
         
         const food = await Food.findOne({ id });
         if (!food) return res.status(404).json({ message: "Makanan tidak ditemukan." });
@@ -205,6 +206,10 @@ const eat = async (req, res) => {
                 });
             }
             existingHistory.summary.kalori += kalori;
+            existingHistory.summary.protein += food.nutrient_fact_100g.protein * (jumlah / 100);
+            existingHistory.summary.karbohidrat += food.nutrient_fact_100g.karbohidrat_total * (jumlah / 100);
+            existingHistory.summary.lemak += food.nutrient_fact_100g.lemak_total * (jumlah / 100);
+
             await existingHistory.save();
             return res.status(200).json(existingHistory);
         } else {
@@ -220,9 +225,9 @@ const eat = async (req, res) => {
                 }],
                 summary: {
                     kalori,
-                    protein: food.nutrient_fact_100g.protein,
-                    karbohidrat: food.nutrient_fact_100g.karbohidrat_total,
-                    lemak: food.nutrient_fact_100g.lemak_total
+                    protein: food.nutrient_fact_100g.protein * (jumlah / 100),
+                    karbohidrat: food.nutrient_fact_100g.karbohidrat_total * (jumlah / 100),
+                    lemak: food.nutrient_fact_100g.lemak_total * (jumlah / 100)
                 }
             });
             await newFoodHistory.save();
@@ -495,16 +500,25 @@ const fetchRecommendation = async (req, res) => {
 const calculateCalorie = async (req, res) => {
     try {
         const tanggal = getTodayDateString();
-        const username = req.params;
+        const username = req.params.username;
         const todayFood = await FoodHistory.findOne({
-            username: username.username,
+            username: username,
             tanggal,
         });
 
         const todayWorkout = await WorkoutHistory.findOne({
-            username: username.username,
+            username: username,
             tanggal,
         });
+
+        if (!todayFood && !todayWorkout) {
+            return res.status(200).json({
+                total_calorie: 0,
+                calorie_in: 0,
+                calorie_out: 0,
+                status: "neutral"
+            });
+        }
 
         let totalcalorie = 0, calorieIn = 0, calorieOut = 0;
         if (todayFood) calorieIn = todayFood.summary.kalori || 0;

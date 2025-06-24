@@ -28,7 +28,7 @@ router.post('/eat/:username', eat);
 
 router.get('/mdp/motivation', getDailyMotivation);
 router.get('/mdp/recommendation/:username', fetchRecommendation);
-router.get('/mdp/calorie', calculateCalorie);
+router.get('/mdp/calorie/:username', calculateCalorie);
 router.get('/mdp/lastworkout/:username', getLastWorkout);
 router.get('/mdp/diary/:username', getDiary);
 router.post('/mdp/scan/:username', uploadScan.single('imageFile'), scan);

@@ -6,11 +6,9 @@ const updateApiLog = (req, res, next) => {
         let username = 'anonymous';
         
         try {
-            // Try to get username from authenticated user first (from checkApiKey middleware)
             if (req.user && req.user.username) {
                 username = req.user.username;
             }
-            // If no authenticated user, try to get from JWT token manually
             else if (req.headers.authorization) {
                 try {
                     let token = req.headers.authorization;
@@ -21,7 +19,6 @@ const updateApiLog = (req, res, next) => {
                         username = decoded.username;
                     }
                 } catch (jwtError) {
-                    // Token invalid, continue with other methods
                 }
             }
             // If still no username, try to get from login request body

@@ -9,7 +9,6 @@ const router = express.Router();
 router.use(updateApiLog);
 router.use(updateApiHit);
 
-// GET routes - accessible by all tiers (Free, Basic, Premium)
 router.get('/', checkApiKey, getAll);
 router.get('/mdp/', checkApiKey, getAll);
 router.get('/mdp/:id_exercise/:username', checkApiKey, getOneWithHistory); 

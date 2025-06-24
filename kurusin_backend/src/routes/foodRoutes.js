@@ -9,7 +9,6 @@ const updateApiHit = require('../middlewares/updateApiHit');
 router.use(updateApiLog);
 router.use(updateApiHit);
 
-// GET routes - accessible by all tiers (Free, Basic, Premium)
 router.get('/', checkApiKey, getAll);
 router.get('/mdp/', checkApiKey, getAll);
 router.get('/:id', checkApiKey, getOne);

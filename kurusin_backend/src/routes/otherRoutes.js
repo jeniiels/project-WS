@@ -12,14 +12,11 @@ const router = express.Router();
 
 router.use(updateApiLog);
 
-// Public routes (no authentication required, logged but no API hit tracking)
 router.post('/login', login);
 router.post('/register', register);
 
-// Apply updateApiHit to protected routes only
 router.use(updateApiHit);
 
-// Protected routes (authentication required)
 router.get('/logs/:username', checkApiKey, checkRoles('admin'), getLogs); // Admin only
 router.get('/logs', checkApiKey, checkRoles('admin'), getAllLogs); // Admin only
 router.post('/subscribe', checkApiKey, subscribe);
@@ -28,7 +25,6 @@ router.get('/diary/:username', checkApiKey, checkSubscription('basic'), getDiary
 router.post('/scan', checkApiKey, checkSubscription('premium'), uploadScan.single('imageFile'), scan);
 router.post('/perform', checkApiKey, checkSubscription('premium'), perform);
 
-// Public routes (no authentication required - external API fetches)
 router.get('/fetch', checkApiKey, checkSubscription('basic'), fetchExercise);
 router.get('/motivation', checkApiKey, checkSubscription('premium'), getDailyMotivation);
 router.get('/recommendation', checkApiKey, checkSubscription('premium'), fetchRecommendation);

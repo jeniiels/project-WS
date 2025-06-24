@@ -19,27 +19,27 @@ router.post('/register', register);
 router.use(updateApiHit);
 
 // Protected routes (authentication required)
-router.get('/logs/:username', checkApiKey, getLogs);
-router.get('/logs', checkApiKey, getAllLogs);
-router.post('/subscribe', checkApiKey, subscribe);
-router.post('/saldo', checkApiKey, addSaldo);
-router.get('/diary/:username', checkApiKey, getDiary);
+router.get('/logs/:username', checkApiKey, checkSubscription('premium'), getLogs);
+router.get('/logs', checkApiKey, checkSubscription('premium'), getAllLogs);
+router.post('/subscribe', checkApiKey, subscribe); // Accessible by all tiers
+router.post('/saldo', checkApiKey, addSaldo); // Accessible by all tiers
+router.get('/diary/:username', checkApiKey, checkSubscription('basic'), getDiary);
 router.post('/scan', checkApiKey, checkSubscription('premium'), uploadScan.single('imageFile'), scan);
 router.post('/perform', checkApiKey, checkSubscription('premium'), perform);
 
 // Public routes (no authentication required - external API fetches)
-router.get('/fetch', fetchExercise);
+router.get('/fetch', checkApiKey, checkSubscription('basic'), fetchExercise);
 router.get('/motivation', checkApiKey, checkSubscription('premium'), getDailyMotivation);
 router.get('/recommendation', checkApiKey, checkSubscription('premium'), fetchRecommendation);
-router.get('/calorie', calculateCalorie);
-router.get('/lastworkout/:username', checkApiKey, getLastWorkout);
+router.get('/calorie', checkApiKey, checkSubscription('basic'), calculateCalorie);
+router.get('/lastworkout/:username', checkApiKey, checkSubscription('basic'), getLastWorkout);
 
 // MDP routes
 router.get('/mdp/motivation', checkApiKey, checkSubscription('premium'), getDailyMotivation);
 router.get('/mdp/recommendation/:username', checkApiKey, checkSubscription('premium'), fetchRecommendation);
-router.get('/mdp/calorie', calculateCalorie);
-router.get('/mdp/lastworkout/:username', checkApiKey, getLastWorkout);
-router.get('/mdp/diary/:username', checkApiKey, getDiary);
+router.get('/mdp/calorie', checkApiKey, checkSubscription('basic'), calculateCalorie);
+router.get('/mdp/lastworkout/:username', checkApiKey, checkSubscription('basic'), getLastWorkout);
+router.get('/mdp/diary/:username', checkApiKey, checkSubscription('basic'), getDiary);
 router.post('/mdp/scan', checkApiKey, checkSubscription('premium'), uploadScan.single('imageFile'), scan);
 router.post('/mdp/perform', checkApiKey, checkSubscription('premium'), perform);
 

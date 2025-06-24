@@ -2,6 +2,7 @@ const express = require('express');
 const { getAll, getOne, create, pp, update, remove, login, register } = require('../controllers/userController');
 const uploadUser = require('../utils/multer/uploadUser');
 const checkApiKey = require('../middlewares/checkApiKey');
+const checkSubscription = require('../middlewares/checkSubscription');
 const checkRoles = require('../middlewares/checkRoles');
 const updateApiLog = require('../middlewares/updateApiLog');
 const updateApiHit = require('../middlewares/updateApiHit');
@@ -18,15 +19,15 @@ router.post('/register', updateApiLog, register);
 router.use(updateApiLog);
 router.use(updateApiHit);
 
-// Protected routes (require authentication)
-router.get('/', checkApiKey, getAll);
-router.get('/:username', checkApiKey, getOne);
-router.post('/upload', checkApiKey, uploadUser.single("profile"), pp);
-router.put('/:username', checkApiKey, checkRoles("admin"), update);
-router.delete('/:username', checkApiKey, checkRoles("admin"), remove);
+// Protected routes (require authentication) - accessible by all tiers (Free, Basic, Premium)
+router.get('/', checkApiKey, checkSubscription('free'), getAll);
+router.get('/:username', checkApiKey, checkSubscription('free'), getOne);
+router.post('/upload', checkApiKey, checkSubscription('free'), uploadUser.single("profile"), pp);
+router.put('/:username', checkApiKey, checkRoles("admin"), checkSubscription('free'), update);
+router.delete('/:username', checkApiKey, checkRoles("admin"), checkSubscription('free'), remove);
 
-// MDP routes 
-router.get('/mdp/:username', checkApiKey, getOne);
+// MDP routes - accessible by all tiers (Free, Basic, Premium)
+router.get('/mdp/:username', checkApiKey, checkSubscription('free'), getOne);
 router.post('/mdp/login', login);
 router.post('/mdp/register', register);
 

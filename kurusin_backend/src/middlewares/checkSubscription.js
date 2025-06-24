@@ -1,4 +1,10 @@
-const checkSubscription = (...allowedTiers) => {
+const tierHierarchy = {
+    'free': 1,
+    'basic': 2,
+    'premium': 3
+};
+
+const checkSubscription = (minimumRequiredTier) => {
     return (req, res, next) => {
         try {
             if (!req.user) {
@@ -15,22 +21,32 @@ const checkSubscription = (...allowedTiers) => {
                 });
             }
 
-            if (!allowedTiers || allowedTiers.length === 0) {
+            const requiredTierName = minimumRequiredTier.toLowerCase();
+            const userTierName = req.user.subscription.toLowerCase();
+
+            const requiredLevel = tierHierarchy[requiredTierName];
+            const userLevel = tierHierarchy[userTierName];
+
+            if (!requiredLevel) {
+                console.error(`Server configuration error: Invalid tier "${minimumRequiredTier}" used in route protection.`);
                 return res.status(500).json({
                     success: false,
-                    message: 'Server error: No subscription tiers specified in middleware configuration.'
+                    message: 'Server error: Invalid subscription tier specified in middleware configuration.'
+                });
+            }
+            if (!userLevel) {
+                return res.status(403).json({
+                    success: false,
+                    message: `Access denied: Your subscription tier "${req.user.subscription}" is not recognized.`
                 });
             }
 
-            const normalizedAllowedTiers = allowedTiers.map(tier => tier.toLowerCase());
-            const userTier = req.user.subscription.toLowerCase();
-
-            if (!normalizedAllowedTiers.includes(userTier)) {
+            if (userLevel < requiredLevel) {
                 return res.status(403).json({
                     success: false,
-                    message: `Access denied: This feature requires ${allowedTiers.join(' or ')} subscription. Your current subscription: ${req.user.subscription}`,
+                    message: `Access denied: This feature requires a "${minimumRequiredTier}" subscription or higher.`,
                     details: {
-                        requiredTiers: allowedTiers,
+                        requiredTier: minimumRequiredTier,
                         currentTier: req.user.subscription,
                         upgradeRequired: true
                     }
@@ -39,14 +55,13 @@ const checkSubscription = (...allowedTiers) => {
 
             req.subscriptionInfo = {
                 currentTier: req.user.subscription,
-                allowedTiers: allowedTiers,
-                apiQuota: req.user.apiQuota || 0,
+                requiredTier: minimumRequiredTier,
                 hasAccess: true
             };
 
-            console.log(`Subscription check passed for user: ${req.user.username}, tier: ${req.user.subscription}`);
-
+            console.log(`Subscription check passed for user: ${req.user.username}, tier: ${req.user.subscription}, required: ${minimumRequiredTier}`);
             next();
+
         } catch (error) {
             console.error('Error in checkSubscription middleware:', error);
             return res.status(500).json({

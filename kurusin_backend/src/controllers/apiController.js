@@ -7,6 +7,7 @@ const getLogs = async (req, res) => {
     try {
         const { username } = req.params;
         const logs = await Apilog.find({ username: username }).sort({ timestamp: -1 }).limit(100);
+
         return res.status(200).json(logs);
     } catch (err) {
         console.error(err);
@@ -17,7 +18,8 @@ const getLogs = async (req, res) => {
 // GET /api/logs - get all logs
 const getAllLogs = async (req, res) => {
     try {
-        const logs = await Apilog.find({}).sort({ timestamp: -1 }).limit(50);
+        const logs = await Apilog.find({}).sort({ timestamp: -1 }).limit(100);
+
         return res.status(200).json(logs);
     } catch (err) {
         console.error(err);
@@ -30,13 +32,18 @@ const subscribe = async (req, res) => {
     try {
         const { tier } = req.body;
         const username = req.user.username;        
-        if (!tier) return res.status(400).json({ message: "Tier is required!" });
+
+        if (!tier) 
+            return res.status(400).json({ message: "Tier is required!" });
 
         const validTiers = ['free', 'basic', 'premium'];
-        if (!validTiers.includes(tier.toLowerCase()))  return res.status(400).json({ message: "Tier is invalid!" });        const currentUser = await User.findOne({ username });
-        if (!currentUser) return res.status(404).json({ message: "User not found!" });
+        if (!validTiers.includes(tier.toLowerCase()))  
+            return res.status(400).json({ message: "Tier is invalid!" });        
+        
+        const currentUser = await User.findOne({ username });
+        if (!currentUser) 
+            return res.status(404).json({ message: "User not found!" });
 
-        // Check if user is already subscribed to this tier but allow resubscription if quota is low
         if (currentUser.subscription == tier.toLowerCase()) {
             if (currentUser.apiQuota > 10) {
                 return res.status(400).json({ 
@@ -47,9 +54,7 @@ const subscribe = async (req, res) => {
                     }
                 });
             }
-        }// Get tier price from Apitier collection
-        const tierData = await Apitier.findOne({ name: tier.toLowerCase() });
-        if (!tierData) return res.status(404).json({ message: "Tier data not found!" });
+        }
 
         if (currentUser.saldo < tierData.price) {
             return res.status(400).json({ 
@@ -65,18 +70,22 @@ const subscribe = async (req, res) => {
         const newApiQuota = await getApiQuotaForTier(tier.toLowerCase());
         
         const newSaldo = Number(currentUser.saldo) - Number(tierData.price);
-          const updatedUser = await User.findOneAndUpdate(
-            { username },
+        const updatedUser = await User.findOneAndUpdate(
+            {
+                username 
+            },
             { 
                 subscription: tier.toLowerCase(),
                 subscriptionDate: new Date(),
                 apiQuota: newApiQuota,
                 saldo: newSaldo
             },
-            { new: true, runValidators: true }
+            { 
+                new: true, 
+                runValidators: true 
+            }
         ).select('-password');
 
-        // Generate new JWT token with updated subscription info
         const tokenPayload = {
             username: updatedUser.username,
             email: updatedUser.email,
@@ -104,7 +113,7 @@ const subscribe = async (req, res) => {
                 saldo: updatedUser.saldo,
                 paidAmount: tierData.price
             },
-            token: newToken // New JWT token with updated subscription
+            token: newToken
         });
     } catch (err) {
         console.error(err);
@@ -134,11 +143,16 @@ const addSaldo = async (req, res) => {
         }
 
         const updatedUser = await User.findOneAndUpdate(
-            { username },
+            { 
+                username 
+            },
             { 
                 $inc: { saldo: saldoAmount }
             },
-            { new: true, runValidators: true }
+            { 
+                new: true, 
+                runValidators: true 
+            }
         ).select('-password');
 
         if (!updatedUser) {

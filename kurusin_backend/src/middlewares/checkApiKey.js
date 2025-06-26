@@ -4,15 +4,15 @@ const { User, Apilog } = require('../models');
 const checkApiKey = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
-        if (!authHeader) return res.status(401).json({ message: 'Access token is required.' });
+        if (!authHeader) 
+            return res.status(401).json({ message: 'Access token is required.' });
         
-        let token;
-        if (authHeader.startsWith('Bearer ')) token = authHeader.substring(7);
-        else token = authHeader;
+        let token = authHeader;
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secretkey');
         const user = await User.findOne({ username: decoded.username });
-        if (!user) return res.status(401).json({ message: 'User not found!' });
+        if (!user) 
+            return res.status(401).json({ message: 'User not found!' });
         
         req.user = {
             username: decoded.username,

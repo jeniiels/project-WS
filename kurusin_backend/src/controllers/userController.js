@@ -61,38 +61,6 @@ const getOne = async (req, res) => {
     }
 };
 
-// POST /api/users
-const create = async (req, res) => {
-    try {
-        await createUserSchema.validateAsync(req.body);
-    } catch (error) {
-        return res.status(400).json({ message: error.details[0].message });
-    }
-
-    const { username, name, email, password, role } = req.body;
-
-    const existingUser = await User.findOne({ username });
-    if (existingUser) return res.status(400).json({ message: "Username already exists!" });
-    const existingEmail = await User.findOne({ email });
-    if (existingEmail) return res.status(400).json({ message: "Email already exists!" });
-      const hashedPassword = await bcryptjs.hash(password, 10);
-    const initialApiQuota = await getApiQuotaForTier('free');
-    
-    const newUser = await User.create({
-        username,
-        name,
-        email,
-        password: hashedPassword,
-        role: role || 'user',
-        saldo: 0,
-        subscription: 'free',
-        subscriptionDate: new Date(), // Set initial subscription date
-        apiQuota: initialApiQuota
-    });
-
-    return res.status(201).json(newUser);
-};
-
 const pp = async (req, res) => {
     return res.status(200).json({ message: "Profile picture uploaded!" })
 };
@@ -149,10 +117,12 @@ const login = async (req, res) => {
     const { username, password } = req.body;
 
     const user = await User.findOne({ username: username });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) 
+        return res.status(404).json({ message: "User not found" });
     
     const isPasswordValid = user && await bcryptjs.compare(password, user.password);
-    if (!isPasswordValid) return res.status(401).json({ message: "Invalid password" });
+    if (!isPasswordValid) 
+        return res.status(401).json({ message: "Invalid password" });
     
     const tokenPayload = {
         username: user.username,
@@ -161,13 +131,54 @@ const login = async (req, res) => {
         saldo: user.saldo,
         subscription: user.subscription,
         apiQuota: user.apiQuota
-    };    const token = jwt.sign(
+    };    
+    
+    const token = jwt.sign(
         tokenPayload, 
         process.env.JWT_SECRET || "secretkey", 
         { expiresIn: process.env.JWT_EXPIRATION || "1h" }
     );
     
-    return res.status(200).json({ token });
+    return res.status(200).json({ 
+        message: "Login successful",
+        token: token 
+    });
+};
+
+// POST /api/users ===== (POST /api/users/register)
+const create = async (req, res) => {
+    try {
+        await createUserSchema.validateAsync(req.body);
+    } catch (error) {
+        return res.status(400).json({ message: error.details[0].message });
+    }
+
+    const { username, name, email, password, role } = req.body;
+
+    const existingUser = await User.findOne({ username });
+    if (existingUser) 
+        return res.status(400).json({ message: "Username already exists!" });
+
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) 
+        return res.status(400).json({ message: "Email already exists!" });
+    
+    const hashedPassword = await bcryptjs.hash(password, 10);
+    const initialApiQuota = await getApiQuotaForTier('free');
+    
+    const newUser = await User.create({
+        username,
+        name,
+        email,
+        password: hashedPassword,
+        role: role,
+        saldo: 0,
+        subscription: 'free',
+        subscriptionDate: new Date(),
+        apiQuota: initialApiQuota
+    });
+
+    return res.status(201).json(newUser);
 };
 
 // POST /api/users/register

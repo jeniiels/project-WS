@@ -21,10 +21,6 @@ const updateApiLog = (req, res, next) => {
                 } catch (jwtError) {
                 }
             }
-            // If still no username, try to get from login request body
-            else if (req.method === 'POST' && req.originalUrl.includes('/login') && req.body && req.body.username) {
-                username = req.body.username;
-            }
             
             const log = new Apilog({
                 username: username,

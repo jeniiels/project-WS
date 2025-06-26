@@ -21,7 +21,8 @@ const getOne = async (req, res) => {
         const { id } = req.params;
         const workout = await Workout.findOne({ id }).select('-_id -createdAt -updatedAt');
         
-        if (!workout) return res.status(404).json({ message: "Workout not found!" });
+        if (!workout) 
+            return res.status(404).json({ message: "Workout not found!" });
         
         return res.status(200).json(workout);
     } catch (err) {
@@ -45,13 +46,14 @@ const create = async (req, res) => {
         const calculatedWorkout = workoutData.exercises.map((exercise) => {
             const heaviestSet = calculateHeaviestSet(exercise.sets);
             const bestVolume = calculateBestVolume(exercise.sets);
-            // console.log(`Heaviest Set: ${heaviestSet}, Best Volume: ${bestVolume}`);
+            
             return {
                 id_exercise: exercise.id_exercise,
                 heaviest_weight: heaviestSet,
                 best_set_volume: bestVolume,
             };
         });
+
         workoutData.exercises = calculatedWorkout;
         const newWorkout = new Workout({ ...workoutData, id });
         const savedWorkout = await newWorkout.save();
@@ -67,20 +69,18 @@ const create = async (req, res) => {
 const update = async (req, res) => {
     try {
         const { id } = req.params;
-
         const workoutData = req.body;
 
         try {
             await createWorkoutSchema.validateAsync(workoutData);
         } catch (error) {
-            console.error("Validation error:", error.details[0].message);
             return res.status(400).json({ message: error.details[0].message });
         }
 
         const calculatedWorkout = workoutData.exercises.map((exercise) => {
             const heaviestSet = calculateHeaviestSet(exercise.sets);
             const bestVolume = calculateBestVolume(exercise.sets);
-            console.log(`Heaviest Set: ${heaviestSet}, Best Volume: ${bestVolume}`);
+
             return {
                 id_exercise: exercise.id_exercise,
                 heaviest_weight: heaviestSet,
@@ -90,12 +90,18 @@ const update = async (req, res) => {
         workoutData.exercises = calculatedWorkout;
         
         const updatedWorkout = await Workout.findOneAndUpdate(
-            { id },
+            { 
+                id 
+            },
             workoutData, 
-            { new: true, runValidators: true }
+            { 
+                new: true, 
+                runValidators: true 
+            }
         );
         
-        if (!updatedWorkout) return res.status(404).json({ message: "Workout not found!" });
+        if (!updatedWorkout) 
+            return res.status(404).json({ message: "Workout not found!" });
         
         return res.status(200).json(updatedWorkout);
     } catch (err) {
@@ -110,7 +116,8 @@ const remove = async (req, res) => {
         const { id } = req.params;
         const deletedWorkout = await Workout.findOneAndDelete({ id });
         
-        if (!deletedWorkout) return res.status(404).json({ message: "Workout not found!" });
+        if (!deletedWorkout) 
+            return res.status(404).json({ message: "Workout not found!" });
         
         return res.status(200).json({
             message: "Workout deleted successfully!",

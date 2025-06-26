@@ -1,13 +1,19 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
+const migrateApitier = require('./migrationApitier');
+const migrateUser = require('./migrationUser');
+const migrateFood = require('./migrationFood');
+const migrateExercise = require('./migrationExercise');
+const migrateWorkouts = require('./migrationWorkouts');
+
 mongoose.connect(process.env.MONGO_URI).then(async () => {
     try {
-        await require('./migrationApitier');
-        await require('./migrationUser');
-        await require('./migrationFood');
-        await require('./migrationExercise');
-        await require('./migrationWorkouts');
+        await migrateApitier();
+        await migrateUser();
+        await migrateFood();
+        await migrateExercise();
+        await migrateWorkouts();
 
         console.log('\nAll migrations completed successfully!');
     } catch (err) {

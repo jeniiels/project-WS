@@ -16,7 +16,7 @@ const splitNumberAndUnit = require("../utils/helper/splitNumberAndUnit");
 
 // GET /api/diary
 const getDiary = async (req, res) => {
-    const { username } = req.params;
+    let username = req.user.username;
     const { tanggal } = req.query;
 
     try {
@@ -100,7 +100,7 @@ const scan = async (req, res) => {
         }
 
         const tanggal = getTodayDateString();
-        const existingHistory = await FoodHistory.findOne({ username: req.params.username, tanggal });
+        const existingHistory = await FoodHistory.findOne({ username: req.user.username, tanggal });
         const parsePorsi = splitNumberAndUnit(foodInfo.nutrisi_prediksi.porsi);
         const jumlah = parsePorsi.value;
         const tipe_sajian = parsePorsi.unit;
@@ -120,7 +120,7 @@ const scan = async (req, res) => {
             await existingHistory.save();
         } else {
             const newFoodHistory = new FoodHistory({
-                username: req.params.username,
+                username: req.user.username,
                 tanggal,
                 foods: [{
                     id: 1,
@@ -194,7 +194,7 @@ const eat = async (req, res) => {
             });
         }
 
-        const existingHistory = await FoodHistory.findOne({ username: req.params.username, tanggal });
+        const existingHistory = await FoodHistory.findOne({ username: req.user.username, tanggal });
         if (existingHistory) {
             const foodIndex = existingHistory.foods.findIndex(f => f.id === id);
             if (foodIndex !== -1) {
@@ -218,7 +218,7 @@ const eat = async (req, res) => {
             return res.status(200).json(existingHistory);
         } else {
             const newFoodHistory = new FoodHistory({
-                username: req.params.username,
+                username: req.user.username,
                 tanggal,
                 foods: [{
                     id: 1,
@@ -450,7 +450,7 @@ const fetchRecommendation = async (req, res) => {
     try {
         const tanggal = getTodayDateString();
         const todayHistory = await FoodHistory.findOne({
-            username: req.params.username,
+            username: req.user.username,
             tanggal,
         });
 
@@ -504,7 +504,7 @@ const fetchRecommendation = async (req, res) => {
 const calculateCalorie = async (req, res) => {
     try {
         const tanggal = getTodayDateString();
-        const username = req.params.username;
+        const username = req.user.username;
         const todayFood = await FoodHistory.findOne({
             username: username,
             tanggal,
@@ -547,7 +547,7 @@ const calculateCalorie = async (req, res) => {
 
 const getLastWorkout = async (req, res) => {
     try {
-        const { username } = req.params;
+        let username = req.user.username;
 
         const lastHistory = await WorkoutHistory.findOne({ username }).sort({ tanggal: -1 });
         if (!lastHistory) return res.status(200).json({ 

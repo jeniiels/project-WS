@@ -19,12 +19,12 @@ router.post('/scan', checkApiKey, updateApiLog, uploadScan.single('imageFile'), 
 router.post('/perform', checkApiKey, updateApiLog, perform);
 
 // Public routes (no authentication required - external API fetches)
-router.get('/fetch', fetchExercise);
-router.get('/motivation', getDailyMotivation);
+router.get('/fetch', checkApiKey, updateApiLog, fetchExercise);
+router.get('/motivation', checkApiKey, updateApiLog, getDailyMotivation);
 router.get('/recommendation', checkApiKey, updateApiLog, fetchRecommendation);
-router.get('/calorie', calculateCalorie);
-router.get('/lastworkout/:username', getLastWorkout);
-router.post('/eat/:username', eat);
+router.get('/calorie', checkApiKey, updateApiLog, calculateCalorie);
+router.get('/lastworkout', checkApiKey, updateApiLog, getLastWorkout);
+router.post('/eat', checkApiKey, updateApiLog, eat);
 
 router.get('/mdp/motivation', getDailyMotivation);
 router.get('/mdp/recommendation/:username', fetchRecommendation);

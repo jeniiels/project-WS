@@ -1,3 +1,5 @@
+const Food = require("../../models/Food");
+
 const generateFoodId = async () => {
     const lastFood = await Food.findOne({ id: { $regex: /^FNB\d{5}$/ } }).sort({ id: -1 }).lean();
     let nextNumber = 1;

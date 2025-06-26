@@ -14,7 +14,7 @@ router.get('/mdp/', getAll);
 router.get('/:id', checkApiKey, getOne);
 router.get('/mdp/:id', getOne);
 router.post('/', create);
-router.put('/:id', checkApiKey, checkRolesoles("admin"), update);
+router.put('/:id', checkApiKey, checkRoles("admin"), update);
 router.delete('/:id', checkApiKey, checkRoles("admin"), remove);
 
 module.exports = router;

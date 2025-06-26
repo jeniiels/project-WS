@@ -15,7 +15,8 @@ const parseSet = require("../utils/helper/parseSet");
 
 // GET /api/diary
 const getDiary = async (req, res) => {
-    const { username } = req.params;
+    // const { username } = req.params;
+    let username = req.user.username
     const { tanggal } = req.query;
 
     try {

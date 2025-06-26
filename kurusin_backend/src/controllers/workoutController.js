@@ -46,7 +46,6 @@ const create = async (req, res) => {
         const calculatedWorkout = workoutData.exercises.map((exercise) => {
             const heaviestSet = calculateHeaviestSet(exercise.sets);
             const bestVolume = calculateBestVolume(exercise.sets);
-            
             return {
                 id_exercise: exercise.id_exercise,
                 heaviest_weight: heaviestSet,
@@ -70,24 +69,19 @@ const update = async (req, res) => {
     try {
         const { id } = req.params;
         const workoutData = req.body;
-
-        try {
-            await createWorkoutSchema.validateAsync(workoutData);
-        } catch (error) {
-            return res.status(400).json({ message: error.details[0].message });
+        if (workoutData.exercises) {
+            const calculatedWorkout = workoutData.exercises.map((exercise) => {
+                const heaviestSet = calculateHeaviestSet(exercise.sets);
+                const bestVolume = calculateBestVolume(exercise.sets);
+                console.log(`Heaviest Set: ${heaviestSet}, Best Volume: ${bestVolume}`);
+                return {
+                    id_exercise: exercise.id_exercise,
+                    heaviest_weight: heaviestSet,
+                    best_set_volume: bestVolume,
+                };
+            });
+            workoutData.exercises = calculatedWorkout;
         }
-
-        const calculatedWorkout = workoutData.exercises.map((exercise) => {
-            const heaviestSet = calculateHeaviestSet(exercise.sets);
-            const bestVolume = calculateBestVolume(exercise.sets);
-
-            return {
-                id_exercise: exercise.id_exercise,
-                heaviest_weight: heaviestSet,
-                best_set_volume: bestVolume,
-            };
-        });
-        workoutData.exercises = calculatedWorkout;
         
         const updatedWorkout = await Workout.findOneAndUpdate(
             { 

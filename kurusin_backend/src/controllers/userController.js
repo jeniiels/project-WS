@@ -45,20 +45,82 @@ const getOne = async (req, res) => {
             .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
         return res.status(200).json({
-            status: "success",
-            data: {
-                id: user._id,
-                username: user.username,
-                email: user.email,
-                createdAt: user.createdAt,
-                history: fullHistory
-            }
+            id: user._id,
+            username: user.username,
+            email: user.email,
+            createdAt: user.createdAt,
+            history: fullHistory
         });
 
     } catch (err) {
         console.error(err);
         return res.status(500).json({ message: err.message });
     }
+};
+
+// const getOne = async (req, res) => {
+//     try {
+//         const { username } = req.params;
+
+//         const user = await User.findOne({ username })
+//             .select('username email createdAt');
+
+//         if (!user) return res.status(404).json({ message: "User not found!" });
+
+//         const workoutHistories = await WorkoutHistory.find({ username }).lean();
+//         const allWorkouts = [];
+
+//         for (const history of workoutHistories) {
+//             for (const workout of history.workouts) {
+//                 const workoutDetail = await Workout.findOne({ id: workout.id_workout }).lean();
+
+//                 allWorkouts.push({
+//                     id_workout: workout.id_workout,
+//                     time: workout.time,
+//                     duration_total: workout.duration_total,
+//                     kalori_total: workoutDetail ? workoutDetail.kalori_total : 0
+//                 });
+//             }
+//         }
+
+//         return res.status(200).json(allWorkouts);
+//         // return res.status(200).json(workoutHistories);
+//     } catch (err) {
+//         console.error(err);
+//         return res.status(500).json({ message: err.message });
+//     }
+// };
+
+// POST /api/users
+const create = async (req, res) => {
+    try {
+        await createUserSchema.validateAsync(req.body);
+    } catch (error) {
+        return res.status(400).json({ message: error.details[0].message });
+    }
+
+    const { username, name, email, password, role } = req.body;
+
+    const existingUser = await User.findOne({ username });
+    if (existingUser) return res.status(400).json({ message: "Username already exists!" });
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) return res.status(400).json({ message: "Email already exists!" });
+    
+    const hashedPassword = await bcryptjs.hash(password, 10);
+    const initialApiQuota = await getApiQuotaForTier('free');
+    
+    const newUser = await User.create({
+        username,
+        name,
+        email,
+        password: hashedPassword,
+        role: role || 'user',
+        saldo: 0,
+        subscription: 'free',
+        apiQuota: initialApiQuota
+    });
+
+    return res.status(201).json(newUser);
 };
 
 const pp = async (req, res) => {
@@ -105,6 +167,8 @@ const remove = async (req, res) => {
 
         if (!deletedUser) return res.status(404).json({ message: "User not found!" });
 
+        await FoodHistory.deleteMany({ username });
+        await WorkoutHistory.deleteMany({ username });
         return res.status(200).json(deletedUser);
     } catch (err) {
         console.error(err);
@@ -117,12 +181,10 @@ const login = async (req, res) => {
     const { username, password } = req.body;
 
     const user = await User.findOne({ username: username });
-    if (!user) 
-        return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).json({ message: "User not found!" });
     
     const isPasswordValid = user && await bcryptjs.compare(password, user.password);
-    if (!isPasswordValid) 
-        return res.status(401).json({ message: "Invalid password" });
+    if (!isPasswordValid) return res.status(401).json({ message: "Invalid password!" });
     
     const tokenPayload = {
         username: user.username,
@@ -139,46 +201,7 @@ const login = async (req, res) => {
         { expiresIn: process.env.JWT_EXPIRATION || "1h" }
     );
     
-    return res.status(200).json({ 
-        message: "Login successful",
-        token: token 
-    });
-};
-
-// POST /api/users ===== (POST /api/users/register)
-const create = async (req, res) => {
-    try {
-        await createUserSchema.validateAsync(req.body);
-    } catch (error) {
-        return res.status(400).json({ message: error.details[0].message });
-    }
-
-    const { username, name, email, password, role } = req.body;
-
-    const existingUser = await User.findOne({ username });
-    if (existingUser) 
-        return res.status(400).json({ message: "Username already exists!" });
-
-    const existingEmail = await User.findOne({ email });
-    if (existingEmail) 
-        return res.status(400).json({ message: "Email already exists!" });
-    
-    const hashedPassword = await bcryptjs.hash(password, 10);
-    const initialApiQuota = await getApiQuotaForTier('free');
-    
-    const newUser = await User.create({
-        username,
-        name,
-        email,
-        password: hashedPassword,
-        role: role,
-        saldo: 0,
-        subscription: 'free',
-        subscriptionDate: new Date(),
-        apiQuota: initialApiQuota
-    });
-
-    return res.status(201).json(newUser);
+    return res.status(200).json({ token });
 };
 
 // POST /api/users/register

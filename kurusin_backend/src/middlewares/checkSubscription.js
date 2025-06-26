@@ -15,8 +15,10 @@ const checkSubscription = (minimumRequiredTier) => {
             }
 
             const userTierName = req.user.subscription.toLowerCase();
+            const requiredTierName = minimumRequiredTier.toLowerCase();
             const userLevel = tierHierarchy[userTierName];
-
+            const requiredLevel = tierHierarchy[requiredTierName];
+            
             if (!userLevel) {
                 return res.status(403).json({
                     success: false,

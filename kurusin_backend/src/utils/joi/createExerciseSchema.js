@@ -16,10 +16,18 @@ const createExerciseSchema = Joi.object({
         .required().messages({
             'array.base': 'Muscles harus berupa array',
             'any.required': 'Daftar otot wajib diisi'
-      }),
+        }),
     img: Joi.string().uri().optional().messages({
         'string.uri': 'Gambar harus berupa URL yang valid'
-    })
+        }),
+    instructions: Joi.array().items(
+        Joi.string().required().messages({
+            'string.base': 'Instruksi harus berupa string',
+            'any.required': 'Instruksi tidak boleh kosong'
+        })
+    ).optional().messages({
+        'array.base': 'Instructions harus berupa array'
+        })
 });
 
 module.exports = createExerciseSchema;

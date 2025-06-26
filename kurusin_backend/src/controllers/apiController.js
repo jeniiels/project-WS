@@ -2,24 +2,22 @@ const { Apilog, User, Apitier } = require("../models");
 const jwt = require("jsonwebtoken");
 const getApiQuotaForTier = require("../utils/helper/getApiQuotaforTier");
 
+// GET /api/logs - get all logsAdd commentMore actions
+const getAllLogs = async (req, res) => {
+    try {
+        const logs = await Apilog.find({}).sort({ timestamp: -1 }).limit(100);
+        return res.status(200).json(logs);
+    } catch (err) {
+        console.error(err);
+    }
+};
+
 // GET /api/logs/:username
 const getLogs = async (req, res) => {
     try {
         const { username } = req.params;
-        const logs = await Apilog.find({ username: username }).sort({ timestamp: -1 }).limit(100);
-
-        return res.status(200).json(logs);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: err.message });
-    }
-};
-
-// GET /api/logs - get all logs
-const getAllLogs = async (req, res) => {
-    try {
-        const logs = await Apilog.find({}).sort({ timestamp: -1 }).limit(100);
-
+        const logs = await Apilog.find({ apiKey: username }).sort({ timestamp: -1 }).limit(100);
+        if (!logs || logs.length === 0) return res.status(404).json({ message: "No logs found for this user!" });
         return res.status(200).json(logs);
     } catch (err) {
         console.error(err);
@@ -33,7 +31,7 @@ const subscribe = async (req, res) => {
         const { tier } = req.body;
         const username = req.user.username;        
 
-        if (!tier) 
+        if (tier == "") 
             return res.status(400).json({ message: "Tier is required!" });
 
         const validTiers = ['free', 'basic', 'premium'];
@@ -55,6 +53,9 @@ const subscribe = async (req, res) => {
                 });
             }
         }
+
+        const tierData = await Apitier.findOne({ name: tier.toLowerCase() });
+        if (!tierData) return res.status(404).json({ message: "Tier data not found!" });
 
         if (currentUser.saldo < tierData.price) {
             return res.status(400).json({ 

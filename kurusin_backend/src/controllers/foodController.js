@@ -1,5 +1,6 @@
 const { Food } = require("../models");
 const generateFoodId = require("../utils/helper/generateFoodId");
+const createFoodSchema = require("../utils/joi/createFoodSchema");
 
 // GET /api/foods
 const getAll = async (req, res) => {
@@ -13,7 +14,7 @@ const getAll = async (req, res) => {
             nutrient_fact: food.nutrient_fact_100g || food.nutrient_fact,
             image: food.image,
         }));
-
+        if (result.length == 0) return res.status(404).json({ message: "Food not found!" });
         return res.status(200).json(result);
     } catch (err) {
         console.error(err);
@@ -44,6 +45,12 @@ const getOne = async (req, res) => {
 // POST /api/foods
 const create = async (req, res) => {
     try {
+        try {
+            await createFoodSchema.validateAsync(req.body);
+        } catch (error) {
+            return res.status(400).json({ message: error.details[0].message });
+        }
+
         const foodData = req.body;
 
         foodData.id = await generateFoodId();

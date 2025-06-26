@@ -26,14 +26,13 @@ const createWorkoutSchema = Joi.object({
         'array.base': 'Exercises harus berupa array.',
         'array.min': 'Exercises minimal harus memiliki 1 item.',
         'any.required': 'Exercises wajib diisi.'
-    }),
-    // ✅ TAMBAHAN: Field kalori_total untuk Mongoose schema
+        }),
     kalori_total: Joi.number().integer().min(0).required().messages({
         'number.base': 'Kalori total harus berupa angka.',
         'number.integer': 'Kalori total harus berupa bilangan bulat.',
         'number.min': 'Kalori total tidak boleh negatif.',
         'any.required': 'Kalori total wajib diisi.'
-    })
+        })
 });
 
 module.exports = createWorkoutSchema;

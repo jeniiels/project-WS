@@ -10,9 +10,9 @@ router.use(updateApiLog);
 router.use(updateApiHit);
 
 router.get('/', checkApiKey, getAll);
-router.get('/mdp/', checkApiKey, getAll);
+router.get('/mdp/', getAll);
 router.get('/:id', checkApiKey, getOne);
-router.get('/mdp/:id', checkApiKey, getOne);
+router.get('/mdp/:id', getOne);
 
 // POST/PUT/DELETE routes - accessible by Basic & Premium only
 router.post('/', checkApiKey, checkSubscription('basic'), create);

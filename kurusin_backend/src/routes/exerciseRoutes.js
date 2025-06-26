@@ -1,22 +1,19 @@
 const express = require('express');
-const { getAll, getOne, getOneWithHistory, create, update, remove } = require('../controllers/exerciseController');
+const { getAll, getAllExercisesWithHistory, getOne, getOneWithHistory, create, update, remove } = require('../controllers/exerciseController');
 const checkApiKey = require('../middlewares/checkApiKey');
-const checkSubscription = require('../middlewares/checkSubscription');
-const updateApiLog = require('../middlewares/updateApiLog');
-const updateApiHit = require('../middlewares/updateApiHit');
+const checkRoles = require('../middlewares/checkRoles');
 const router = express.Router();
 
-router.use(updateApiLog);
-router.use(updateApiHit);
+router.get('/history/:id_exercise/:username', getOneWithHistory);
+router.get('/history/:username', getAllExercisesWithHistory);
+router.get('/:id_exercise', getOne);
+router.get('/', getAll);
+router.post('/', create);
+router.put('/:id', checkApiKey, checkRoles("admin"), update);
+router.delete('/:id', checkApiKey, checkRoles("admin"), remove);
 
-router.get('/', checkApiKey, getAll);
-router.get('/mdp/', checkApiKey, getAll);
-router.get('/mdp/:id_exercise/:username', checkApiKey, getOneWithHistory); 
-router.get('/:id_exercise', checkApiKey, getOne);
-
-// POST/PUT/DELETE routes - accessible by Basic & Premium only
-router.post('/', checkApiKey, checkSubscription('basic'), create);
-router.put('/:id', checkApiKey, checkSubscription('basic'), update);
-router.delete('/:id', checkApiKey, checkSubscription('basic'), remove);
+router.get('/mdp/', getAll);
+router.get('/exerciseswithhistory/:username', getAllExercisesWithHistory);
+router.get('/mdp/:id_exercise/:username', getOneWithHistory); 
 
 module.exports = router;

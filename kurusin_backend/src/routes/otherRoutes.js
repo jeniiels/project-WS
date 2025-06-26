@@ -21,6 +21,7 @@ router.get('/logs/:username', checkApiKey, checkRoles('admin'), getLogs); // Adm
 router.get('/logs', checkApiKey, checkRoles('admin'), getAllLogs); // Admin only
 router.post('/subscribe', checkApiKey, subscribe);
 router.post('/saldo', checkApiKey, addSaldo);
+
 router.get('/diary/:username', checkApiKey, checkSubscription('basic'), getDiary);
 router.post('/scan', checkApiKey, checkSubscription('premium'), uploadScan.single('imageFile'), scan);
 router.post('/perform', checkApiKey, checkSubscription('premium'), perform);
@@ -29,15 +30,15 @@ router.get('/fetch', checkApiKey, checkSubscription('basic'), fetchExercise);
 router.get('/motivation', checkApiKey, checkSubscription('premium'), getDailyMotivation);
 router.get('/recommendation', checkApiKey, checkSubscription('premium'), fetchRecommendation);
 router.get('/calorie', checkApiKey, checkSubscription('basic'), calculateCalorie);
-router.get('/lastworkout/:username', checkApiKey, checkSubscription('basic'), getLastWorkout);
+router.get('/lastworkout', checkApiKey, checkSubscription('basic'), getLastWorkout);
 
 // MDP routes
-router.get('/mdp/motivation', checkApiKey, checkSubscription('premium'), getDailyMotivation);
-router.get('/mdp/recommendation/:username', checkApiKey, checkSubscription('premium'), fetchRecommendation);
-router.get('/mdp/calorie', checkApiKey, checkSubscription('basic'), calculateCalorie);
-router.get('/mdp/lastworkout/:username', checkApiKey, checkSubscription('basic'), getLastWorkout);
-router.get('/mdp/diary/:username', checkApiKey, checkSubscription('basic'), getDiary);
-router.post('/mdp/scan', checkApiKey, checkSubscription('premium'), uploadScan.single('imageFile'), scan);
-router.post('/mdp/perform', checkApiKey, checkSubscription('premium'), perform);
+router.get('/mdp/motivation', getDailyMotivation);
+router.get('/mdp/recommendation/:username', fetchRecommendation);
+router.get('/mdp/calorie', calculateCalorie);
+router.get('/mdp/lastworkout/:username', getLastWorkout);
+router.get('/mdp/diary/:username', getDiary);
+router.post('/mdp/scan', uploadScan.single('imageFile'), scan);
+router.post('/mdp/perform', perform);
 
 module.exports = router;

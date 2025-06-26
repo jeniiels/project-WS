@@ -141,10 +141,11 @@ const scan = async (req, res) => {
 // POST /api/perform
 const perform = async (req, res) => {
     try {
-        const { username, time, duration } = req.body;
+        const { time, duration } = req.body;
         const workoutData = { exercises: req.body.exercises };
         let id_workout = "";
         let kalori = 0;
+        let username = req.user.username;
 
         const idList = workoutData.exercises.map(e => e.id_exercise);
         const exerciseDetails = await Exercise.find({ id: { $in: idList } }).lean();
@@ -345,7 +346,7 @@ const fetchRecommendation = async (req, res) => {
     try {
         const tanggal = getTodayDateString();
         const todayHistory = await FoodHistory.findOne({
-            username: req.params.username,
+            username: req.user.username,
             tanggal,
         });
 
@@ -397,7 +398,7 @@ const fetchRecommendation = async (req, res) => {
 const calculateCalorie = async (req, res) => {
     try {
         const tanggal = getTodayDateString();
-        const username = req.params;
+        const username = req.user.username;
         const todayFood = await FoodHistory.findOne({
             username: username.username,
             tanggal,
@@ -431,10 +432,10 @@ const calculateCalorie = async (req, res) => {
 
 const getLastWorkout = async (req, res) => {
     try {
-        const { username } = req.params;
+        const username = req.user.username;
 
         const lastHistory = await WorkoutHistory.findOne({ username }).sort({ tanggal: -1 });
-        if (!lastHistory) return res.status(404).json({ message: "Tidak ada riwayat workout untuk user ini." });
+        if (!lastHistory) return res.status(404).json({ message: "Tidak ada riwayat workout history untuk user ini." });
         let lastWorkout = lastHistory.workouts[lastHistory.workouts.length - 1];
 
         const workoutData = await Workout.findOne({ id: lastWorkout.id_workout }).lean();

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { User, Apilog } = require('../models');
+const { User } = require('../models');
 
 const checkApiKey = async (req, res, next) => {
     try {
